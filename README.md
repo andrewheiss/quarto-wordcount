@@ -92,7 +92,14 @@ to understand… um… how it works.
 
 ### Using as an extension
 
-Install the extension in your project by running this in your terminal:
+Install the extension in an already-existing project by running this in
+your terminal:
+
+``` bash
+quarto add andrewheiss/quarto-wordcount
+```
+
+Or create a brand new project by running this:
 
 ``` bash
 quarto use template andrewheiss/quarto-wordcount
