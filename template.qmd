@@ -1,10 +1,11 @@
 ---
-title: Untitled
+title: Some title
+author: Some author
+date: last-modified
+
 format:
   wordcount-html: 
     toc: false
-author: Andrew Heiss
-date: last-modified
 
 references:
 - id: Lovelace1842
