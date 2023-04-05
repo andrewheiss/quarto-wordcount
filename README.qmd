@@ -104,6 +104,17 @@ format:
     filter: [citeproc.lua, wordcount.lua]
 ```
 
+Or as another option, install the extension like normal, but don't use the `wordcount-html` format and instead refer to the Lua filters that live in the extension folder:
+
+```yaml
+title: Something
+format: 
+  html:
+    citeproc: false
+    filters: 
+      - "_extensions/andrewheiss/wordcount/citeproc.lua"
+      - "_extensions/andrewheiss/wordcount/wordcount.lua"
+```
 
 ## How this all works
 
