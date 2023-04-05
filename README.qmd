@@ -101,7 +101,7 @@ title: Something
 format:
   html:
     citeproc: false
-    filter: [citeproc.lua, wordcount.lua]
+    filters: [citeproc.lua, wordcount.lua]
 ```
 
 Or as another option, install the extension like normal, but don't use the `wordcount-html` format and instead refer to the Lua filters that live in the extension folder:
@@ -156,7 +156,7 @@ Quarto doesn't have a `pandoc_args` option though. Instead, it has a `filters` Y
 format:
   html:
     citeproc: false
-    filter:
+    filters:
       - '/path/to/wordcount.lua'
 ```
 
@@ -177,7 +177,7 @@ end
 format:
   html:
     citeproc: false
-    filter:
+    filters:
       - '/path/to/citeproc.lua'
       - '/path/to/wordcount.lua'
 ```
@@ -193,7 +193,7 @@ Eventually [the Quarto team is planning on allowing filter options to get inject
 ```yaml
 format:
   html:
-    filter:
+    filters:
       post:
         - '/path/to/wordcount.lua'
 ```

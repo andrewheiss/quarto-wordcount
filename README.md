@@ -141,7 +141,7 @@ title: Something
 format:
   html:
     citeproc: false
-    filter: [citeproc.lua, wordcount.lua]
+    filters: [citeproc.lua, wordcount.lua]
 ```
 
 Or as another option, install the extension like normal, but don’t use
@@ -222,7 +222,7 @@ to the document:
 format:
   html:
     citeproc: false
-    filter:
+    filters:
       - '/path/to/wordcount.lua'
 ```
 
@@ -250,7 +250,7 @@ end
 format:
   html:
     citeproc: false
-    filter:
+    filters:
       - '/path/to/citeproc.lua'
       - '/path/to/wordcount.lua'
 ```
@@ -272,7 +272,7 @@ like this:
 ``` yaml
 format:
   html:
-    filter:
+    filters:
       post:
         - '/path/to/wordcount.lua'
 ```
