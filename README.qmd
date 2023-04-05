@@ -135,7 +135,7 @@ pandoc whatever.md --output whatever.html --citeproc --lua-filter wordcount.lua
 
 Quarto doesn't have a `pandoc_args` option though. Instead, it has a `filters` YAML key that lets you specify a list of Lua filters to apply to the document:
 
-```
+```yaml
 format:
   html:
     citeproc: false
@@ -156,7 +156,7 @@ end
 
 …and then include *that* as a filter:
 
-```
+```yaml
 format:
   html:
     citeproc: false
@@ -171,9 +171,9 @@ This creates a pandoc command that looks something like this, feeding the docume
 pandoc whatever.md --output whatever.html  --lua-filter citeproc.lua --lua-filter wordcount.lua
 ```
 
-Eventually [the Quarto team is planning on allowing filter options to get injected at different stages in the rendering process](https://github.com/quarto-dev/quarto-cli/issues/4113), so someday we can skip the wrapper filter and just do something like this:
+Eventually [the Quarto team is planning on allowing filter options to get injected at different stages in the rendering process](https://github.com/quarto-dev/quarto-cli/issues/4113), so someday we can skip the citeproc wrapper filter and just do something like this:
 
-```
+```yaml
 format:
   html:
     filter:
@@ -186,7 +186,7 @@ But that doesn't work yet.
 
 ## Example
 
-You can see a minimal sample document at [`template.qmd`](template.qmd)
+You can see a minimal sample document at [`template.qmd`](template.qmd).
 
 
 ## Credits

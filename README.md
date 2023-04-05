@@ -197,11 +197,13 @@ Quarto doesn’t have a `pandoc_args` option though. Instead, it has a
 `filters` YAML key that lets you specify a list of Lua filters to apply
 to the document:
 
-    format:
-      html:
-        citeproc: false
-        filter:
-          - '/path/to/wordcount.lua'
+``` yaml
+format:
+  html:
+    citeproc: false
+    filter:
+      - '/path/to/wordcount.lua'
+```
 
 However, there’s no obvious way to reposition the `--citeproc` argument
 and it will automatically appear at the end, making it so generated
@@ -223,12 +225,14 @@ end
 
 …and then include *that* as a filter:
 
-    format:
-      html:
-        citeproc: false
-        filter:
-          - '/path/to/citeproc.lua'
-          - '/path/to/wordcount.lua'
+``` yaml
+format:
+  html:
+    citeproc: false
+    filter:
+      - '/path/to/citeproc.lua'
+      - '/path/to/wordcount.lua'
+```
 
 This creates a pandoc command that looks something like this, feeding
 the document to the citeproc “filter” first, then feeding that to the
@@ -241,19 +245,22 @@ pandoc whatever.md --output whatever.html  --lua-filter citeproc.lua --lua-filte
 Eventually [the Quarto team is planning on allowing filter options to
 get injected at different stages in the rendering
 process](https://github.com/quarto-dev/quarto-cli/issues/4113), so
-someday we can skip the wrapper filter and just do something like this:
+someday we can skip the citeproc wrapper filter and just do something
+like this:
 
-    format:
-      html:
-        filter:
-          post:
-            - '/path/to/wordcount.lua'
+``` yaml
+format:
+  html:
+    filter:
+      post:
+        - '/path/to/wordcount.lua'
+```
 
 But that doesn’t work yet.
 
 ## Example
 
-You can see a minimal sample document at [`template.qmd`](template.qmd)
+You can see a minimal sample document at [`template.qmd`](template.qmd).
 
 ## Credits
 
