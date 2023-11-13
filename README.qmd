@@ -201,6 +201,39 @@ format:
 But that doesn't work yet.
 
 
+## Appendices
+
+In academic writing, it's often helpful to have a separate word count for content in the appendices, since things there don't typically count against journal word limits. [Quarto has a neat feature for automatically creating an appendix section](https://quarto.org/docs/authoring/appendices.html) and moving content there automatically as needed. It does this (I think) with a fancy Lua filter.
+
+However, Quarto's appendix-generating process comes *after* any custom Lua filters, so even though the final rendered document creates a div with the id "appendix", that div isn't accessible when counting words (since it doesn't exist yet), so there's no easy way to extract the appendix words from the rest of the text.
+
+So, as a temporary workaround until I can figure out how to make this Lua filter run after the creation of the appendix div, you can get a separate word count for the appendix by creating your own div with the id `appendix-count`:
+
+````markdown
+# Introduction
+
+Regular text goes here.
+
+::: {#appendix-count}
+
+# Appendix {.appendix}
+
+More words here
+
+:::
+````
+
+That will create this word count:
+
+```
+5 in the main text + references, with 4 in the appendix
+-------------------------------------------------------
+5 words in text body
+0 words in reference section
+4 words in appendix section
+```
+
+
 ## Example
 
 You can see a minimal sample document at [`template.qmd`](template.qmd).

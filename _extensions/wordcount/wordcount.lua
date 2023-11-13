@@ -11,6 +11,7 @@
 
 local body_words = 0
 local ref_words = 0
+local appendix_words = 0
 
 function is_table (blk)
    return (blk.t == "Table")
@@ -62,6 +63,33 @@ function remove_all_refs (blks)
    return out
 end
 
+-- Check if the block is an appendix div
+function is_appendix_div (blk)
+   return (blk.t == "Div" and blk.identifier == "appendix-count")
+end
+
+-- Get all appendix divs
+function get_all_appendix (blks)
+  local out = {}
+   for _, b in pairs(blks) do
+      if is_appendix_div(b) then
+          table.insert(out, b)
+      end
+   end
+   return out
+end
+
+-- Remove all appendix divs
+function remove_all_appendix (blks)
+   local out = {}
+   for _, b in pairs(blks) do
+      if not is_appendix_div(b) then
+          table.insert(out, b)
+      end
+   end
+   return out
+end
+
 body_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
@@ -90,6 +118,16 @@ ref_count = {
   end
 }
 
+-- Count words in the appendix
+appendix_count = {
+  Str = function(el)
+    -- we don't count a word if it's entirely punctuation:
+    if el.text:match("%P") then
+      appendix_words = appendix_words + 1
+    end
+  end
+}
+
 function Pandoc(el)
   if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
     io.stderr:write("WARNING: pandoc >= 2.1 required for wordcount filter\n")
@@ -100,14 +138,31 @@ function Pandoc(el)
 
   refs_title = el.meta["reference-section-title"]
   local unreffed = remove_all_refs(untabled)
-  pandoc.walk_block(pandoc.Div(unreffed), body_count)
+  
+  -- Remove appendix divs from the blocks
+  local unappended = remove_all_appendix(unreffed)
+  -- Walk through the unappended blocks and count the words
+  pandoc.walk_block(pandoc.Div(unappended), body_count)
+  
   local body_words_out = body_words .. " words in text body"
   
   local refs = get_all_refs(untabled)
   pandoc.walk_block(pandoc.Div(refs), ref_count)
   local ref_words_out = ref_words .. " words in reference section"
   
-  local total_words_out = body_words + ref_words .. " total words"
+  -- Get all appendix divs
+  local appendix = get_all_appendix(unreffed)
+  -- Walk through the appendix divs and count the words
+  pandoc.walk_block(pandoc.Div(appendix), appendix_count)
+  -- Print out the count of words in the appendix
+  local appendix_words_out = appendix_words .. " words in appendix section"
+  
+  local total_words_out = ""
+  if appendix_words > 0 then
+    total_words_out = body_words + ref_words .. " in the main text + references, with " .. appendix_words .. " in the appendix"
+  else
+    total_words_out = body_words + ref_words + appendix_words .. " total words"
+  end
   
   local longest_out = math.max(string.len(body_words_out), 
                                string.len(ref_words_out), 
@@ -117,6 +172,11 @@ function Pandoc(el)
   print(string.rep("-", longest_out))
   print(body_words_out)
   print(ref_words_out)
+  
+  if appendix_words > 0 then
+    print(appendix_words_out)
+  end
+  
   print()
   
   return el
