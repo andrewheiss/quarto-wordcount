@@ -24,6 +24,7 @@ knitr::opts_chunk$set(
     id="toc-using-without-an-extension">Using without an extension</a>
 - <a href="#how-this-all-works" id="toc-how-this-all-works">How this all
   works</a>
+- <a href="#appendices" id="toc-appendices">Appendices</a>
 - <a href="#example" id="toc-example">Example</a>
 - <a href="#credits" id="toc-credits">Credits</a>
 
