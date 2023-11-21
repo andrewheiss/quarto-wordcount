@@ -35,14 +35,6 @@ function is_ref_div (blk)
    return (blk.t == "Div" and blk.identifier == "refs")
 end
 
-function is_ref_header (blk)
-  local metadata_title = refs_title
-  if refs_title then
-    metadata_title = metadata_title[1].c:lower():gsub(" ", "-")
-  end
-  return (blk.t == "Header" and (blk.identifier == "references" or blk.identifier == metadata_title))
-end
-
 function get_all_refs (blks)
   local out = {}
    for _, b in pairs(blks) do
@@ -56,7 +48,7 @@ end
 function remove_all_refs (blks)
    local out = {}
    for _, b in pairs(blks) do
-      if not (is_ref_div(b) or is_ref_header(b)) then
+      if not (is_ref_div(b)) then
 	      table.insert(out, b)
       end
    end
