@@ -142,7 +142,11 @@ title: Something
 format:
   html:
     citeproc: false
-    filters: [citeproc.lua, wordcount.lua]
+    filters: 
+      - at: pre-render
+        path: "citeproc.lua"
+      - at: pre-render
+        path: "wordcount.lua"
 ```
 
 Or as another option, install the extension like normal, but don’t use
@@ -155,8 +159,10 @@ format:
   html:
     citeproc: false
     filters: 
-      - "_extensions/andrewheiss/wordcount/citeproc.lua"
-      - "_extensions/andrewheiss/wordcount/wordcount.lua"
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/citeproc.lua"
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/wordcount.lua"
 ```
 
 ## How this all works
@@ -217,14 +223,15 @@ pandoc whatever.md --output whatever.html --citeproc --lua-filter wordcount.lua
 
 Quarto doesn’t have a `pandoc_args` option though. Instead, it has a
 `filters` YAML key that lets you specify a list of Lua filters to apply
-to the document:
+to the document at specific steps in the rendering process:
 
 ``` yaml
 format:
   html:
     citeproc: false
-    filters:
-      - '/path/to/wordcount.lua'
+    filters: 
+      - at: pre-render
+        path: "/path/to/wordcount.lua"
 ```
 
 However, there’s no obvious way to reposition the `--citeproc` argument
@@ -251,9 +258,11 @@ end
 format:
   html:
     citeproc: false
-    filters:
-      - '/path/to/citeproc.lua'
-      - '/path/to/wordcount.lua'
+    filters: 
+      - at: pre-render
+        path: "/path/to/citeproc.lua"
+      - at: pre-render
+        path: "/path/to/wordcount.lua"
 ```
 
 This creates a pandoc command that looks something like this, feeding
