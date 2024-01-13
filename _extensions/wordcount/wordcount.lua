@@ -24,6 +24,18 @@ function set_meta(m)
   return m
 end
 
+function count_notes(blks)
+  local count = 0
+  pandoc.walk_block(pandoc.Div(blks),  {
+    Str = function(el)
+      if is_word(el.text) then
+        count = count + 1
+      end
+    end
+  })
+  return count
+end
+
 function is_table (blk)
    return (blk.t == "Table")
 end
@@ -34,6 +46,10 @@ end
 
 function is_note (blk)
    return (blk.t == "Note")
+end
+
+function is_word (text)
+  return text:match("%P") and not (text:match("“") or text:match("”"))
 end
 
 function remove_all_tables_images (blks)
@@ -99,6 +115,7 @@ end
 function get_all_appendix (blks)
   local out = {}
    for _, b in pairs(blks) do
+     print(b)
       if is_appendix_div(b) then
           table.insert(out, b)
       end
@@ -120,7 +137,8 @@ end
 body_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
-    if el.text:match("%P") then
+    if is_word(el.text) then
+      print(el.text)
       body_words = body_words + 1
     end
   end,
@@ -133,15 +151,26 @@ body_count = {
   CodeBlock = function(el)
     _,n = el.text:gsub("%S+","")
     body_words = body_words + n
+  end,
+  
+  Note = function(el)
+    local count = count_notes(el)
+    body_words = body_words - count
   end
+    
 }
 
 ref_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
-    if el.text:match("%P") then
+    if is_word(el.text) then
       ref_words = ref_words + 1
     end
+  end,
+  
+  Note = function(el)
+    local count = count_notes(el)
+    ref_words = ref_words - count
   end
 }
 
@@ -149,15 +178,20 @@ ref_count = {
 appendix_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
-    if el.text:match("%P") then
+    if is_word(el.text) then
       appendix_words = appendix_words + 1
     end
+  end,
+  
+  Note = function(el)
+    local count = count_notes(el)
+    appendix_words = appendix_words - count
   end
 }
 
 note_count = {
   Str = function(el)
-    if el.text:match("%P") then
+    if is_word(el.text) then
       note_words = note_words + 1
     end
   end
@@ -199,7 +233,7 @@ function Pandoc(el)
   -- Walk through the unappended blocks and count the words
   pandoc.walk_block(pandoc.Div(unnoted), body_count)
   -- notes and double counted by body
-  body_words = body_words - note_words
+  --body_words = body_words - note_words
   local body_words_out = body_words .. " words in text body"
   
   local refs = get_all_refs(untabled)

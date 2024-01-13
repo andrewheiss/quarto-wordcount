@@ -25,19 +25,6 @@ references:
   type: article-journal
   volume: 3
 
-- id: Turing1936
-  author:
-    - family: Turing
-      given: Alan Mathison
-  citation-key: Turing1936
-  container-title: Journal of Math
-  issue: 345–363
-  issued:
-    - year: 1936
-  page: 230–265
-  title: On Computable Numbers, with an Application to the Entscheidungsproblem
-  type: article-journal
-  volume: 58
 ---
 
 ## Introduction
@@ -55,15 +42,29 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 
-## References 
+The word count for the document is {{< words-body >}}.[^1] This count does not include the number of words in the foot notes[^2].
+
+
+
+[^1]: But the total word count is {{< words-total >}}
+[^2]: The word count here is {{< words-note >}}
+
+some more information about the appendix [^4] ^[inline footnote1]
+
+## References [^3]
+
+[^3]: the word count for references is {{< words-ref >}}
 
 ::: {#refs}
 :::
 
-::: {#appendix-count}
 
-## Appendix {.appendix}
+
+<!-- ::: {#appendix-count} -->
+## Appendix ^[inline footnote2] {.appendix} 
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+<!-- ::: -->
 
-:::
+
+[^4]: The word count for Appendix is {{< words-append >}}
