@@ -12,6 +12,15 @@
 local body_words = 0
 local ref_words = 0
 local appendix_words = 0
+local total_words = 0
+
+function set_meta(m)
+  m.wordcount_body_words = body_words
+  m.wordcount_ref_words = ref_words
+  m.wordcount_appendix_words = appendix_words
+  m.wordcount_total_words = body_words + ref_words + appendix_words
+  return m
+end
 
 function is_table (blk)
    return (blk.t == "Table")
@@ -170,6 +179,8 @@ function Pandoc(el)
   end
   
   print()
+  -- modify meta data for words.lua
+  el.meta = set_meta(el.meta)
   
   return el
 end
