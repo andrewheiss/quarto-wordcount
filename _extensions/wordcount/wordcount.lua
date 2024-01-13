@@ -24,7 +24,7 @@ function set_meta(m)
   return m
 end
 
-function count_notes(blks)
+function count_words_in_notes(blks)
   local count = 0
   pandoc.walk_block(pandoc.Div(blks),  {
     Str = function(el)
@@ -42,10 +42,6 @@ end
 
 function is_image (blk)
    return (blk.t == "Image")
-end
-
-function is_note (blk)
-   return (blk.t == "Note")
 end
 
 function is_word (text)
@@ -80,26 +76,6 @@ function remove_all_refs (blks)
    local out = {}
    for _, b in pairs(blks) do
       if not (is_ref_div(b)) then
-	      table.insert(out, b)
-      end
-   end
-   return out
-end
-
-function remove_all_notes (blks)
-   local out = {}
-   for _, b in pairs(blks) do
-      if not (is_note(b)) then
-	      table.insert(out, b)
-      end
-   end
-   return out
-end
-
-function get_all_notes (blks)
-  local out = {}
-   for _, b in pairs(blks) do
-      if is_note(b) then
 	      table.insert(out, b)
       end
    end
@@ -152,7 +128,7 @@ body_count = {
   end,
   
   Note = function(el)
-    local count = count_notes(el)
+    local count = count_words_in_notes(el)
     body_words = body_words - count
   end
     
@@ -167,7 +143,7 @@ ref_count = {
   end,
   
   Note = function(el)
-    local count = count_notes(el)
+    local count = count_words_in_notes(el)
     ref_words = ref_words - count
   end
 }
@@ -182,7 +158,7 @@ appendix_count = {
   end,
   
   Note = function(el)
-    local count = count_notes(el)
+    local count = count_words_in_notes(el)
     appendix_words = appendix_words - count
   end
 }
@@ -214,7 +190,6 @@ function Pandoc(el)
     }
     )
     
-  --local notes = get_all_notes(untabled)
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
   local note_words_out = note_words .. " words in notes section"
     
@@ -226,10 +201,8 @@ function Pandoc(el)
   -- Remove appendix divs from the blocks
   local unappended = remove_all_appendix(unreffed)
   
-  local unnoted = remove_all_notes(unappended)
-  
   -- Walk through the unappended blocks and count the words
-  pandoc.walk_block(pandoc.Div(unnoted), body_count)
+  pandoc.walk_block(pandoc.Div(unappended), body_count)
   -- notes and double counted by body
   --body_words = body_words - note_words
   local body_words_out = body_words .. " words in text body"
