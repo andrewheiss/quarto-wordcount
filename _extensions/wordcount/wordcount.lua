@@ -115,7 +115,6 @@ end
 function get_all_appendix (blks)
   local out = {}
    for _, b in pairs(blks) do
-     print(b)
       if is_appendix_div(b) then
           table.insert(out, b)
       end
@@ -138,7 +137,6 @@ body_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
     if is_word(el.text) then
-      print(el.text)
       body_words = body_words + 1
     end
   end,
