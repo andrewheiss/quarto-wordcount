@@ -1,10 +1,3 @@
-map = {
-  ['words-body'] = "wordcount_body_words",
-  ['words-ref'] = "wordcount_ref_words",
-  ['words-append'] = "wordcount_appendix_words",
-  ['words-note'] = "wordcount_note_words",
-  ['words-total'] = "wordcount_total_words"
-}
 
 return {
   ['words-body'] = function(args, kwargs, meta)
