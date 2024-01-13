@@ -11,6 +11,7 @@
 
 local body_words = 0
 local ref_words = 0
+local note_words = 0
 local appendix_words = 0
 local total_words = 0
 
@@ -18,7 +19,8 @@ function set_meta(m)
   m.wordcount_body_words = body_words
   m.wordcount_ref_words = ref_words
   m.wordcount_appendix_words = appendix_words
-  m.wordcount_total_words = body_words + ref_words + appendix_words
+  m.wordcount_note_words = note_words
+  m.wordcount_total_words = body_words + ref_words + appendix_words + note_words
   return m
 end
 
@@ -28,6 +30,10 @@ end
 
 function is_image (blk)
    return (blk.t == "Image")
+end
+
+function is_note (blk)
+   return (blk.t == "Note")
 end
 
 function remove_all_tables_images (blks)
@@ -58,6 +64,26 @@ function remove_all_refs (blks)
    local out = {}
    for _, b in pairs(blks) do
       if not (is_ref_div(b)) then
+	      table.insert(out, b)
+      end
+   end
+   return out
+end
+
+function remove_all_notes (blks)
+   local out = {}
+   for _, b in pairs(blks) do
+      if not (is_note(b)) then
+	      table.insert(out, b)
+      end
+   end
+   return out
+end
+
+function get_all_notes (blks)
+  local out = {}
+   for _, b in pairs(blks) do
+      if is_note(b) then
 	      table.insert(out, b)
       end
    end
@@ -129,12 +155,37 @@ appendix_count = {
   end
 }
 
+note_count = {
+  Str = function(el)
+    if el.text:match("%P") then
+      note_words = note_words + 1
+    end
+  end
+}
+
+
+
 function Pandoc(el)
   if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
     io.stderr:write("WARNING: pandoc >= 2.1 required for wordcount filter\n")
     return el
   end
 
+  -- Get all notes
+  local all_notes = {}
+  -- try and get notes
+  local test = pandoc.walk_block(pandoc.Div(el.blocks),
+    {
+      Note = function(el) 
+        table.insert(all_notes, el)
+      end
+    }
+    )
+    
+  --local notes = get_all_notes(untabled)
+  pandoc.walk_block(pandoc.Div(all_notes), note_count)
+  local note_words_out = note_words .. " words in notes section"
+    
   local untabled = remove_all_tables_images(el.blocks)
 
   refs_title = el.meta["reference-section-title"]
@@ -142,9 +193,13 @@ function Pandoc(el)
   
   -- Remove appendix divs from the blocks
   local unappended = remove_all_appendix(unreffed)
-  -- Walk through the unappended blocks and count the words
-  pandoc.walk_block(pandoc.Div(unappended), body_count)
   
+  local unnoted = remove_all_notes(unappended)
+  
+  -- Walk through the unappended blocks and count the words
+  pandoc.walk_block(pandoc.Div(unnoted), body_count)
+  -- notes and double counted by body
+  body_words = body_words - note_words
   local body_words_out = body_words .. " words in text body"
   
   local refs = get_all_refs(untabled)
@@ -173,6 +228,10 @@ function Pandoc(el)
   print(string.rep("-", longest_out))
   print(body_words_out)
   print(ref_words_out)
+  
+  if note_words > 0 then
+    print(note_words_out)
+  end
   
   if appendix_words > 0 then
     print(appendix_words_out)
