@@ -24,9 +24,9 @@ function set_meta(m)
   return m
 end
 
-function count_words_in_notes(blks)
+function count_words(blks) 
   local count = 0
-  pandoc.walk_block(pandoc.Div(blks),  {
+  pandoc.walk_block(pandoc.Div(blks), {
     Str = function(el)
       if is_word(el.text) then
         count = count + 1
@@ -34,6 +34,17 @@ function count_words_in_notes(blks)
     end
   })
   return count
+end
+
+function is_no_count_div (blk)
+  if (blk and blk.t=="Div" and blk.classes and #blk.classes > 0) then
+    for _, class in pairs(blk.classes) do
+      if class=="no-count" then
+        return true
+      end
+    end
+  end
+  return false
 end
 
 function is_table (blk)
@@ -49,17 +60,49 @@ function is_word (text)
 end
 
 function remove_all_tables_images (blks)
-   local out = {}
-   for _, b in pairs(blks) do
-      if not (is_table(b) or is_image(b)) then
-	      table.insert(out, b)
+  return pandoc.walk_block(pandoc.Div(blks),
+    {
+      Table = function(el)
+        return {}
+      end,
+      Image = function(el)
+        return {}
+      end,
+      Div = function(el)
+        if is_no_count_div(el) then
+          return {}
+        end
+        return el
       end
-   end
-   return out
+    }).content
 end
 
 function is_ref_div (blk)
    return (blk.t == "Div" and blk.identifier == "refs")
+end
+
+function get_all_notes (blks)
+  -- Get all notes
+  local all_notes = {}
+  -- try and get notes
+  pandoc.walk_block(pandoc.Div(blks),
+    {
+      Note = function(el) 
+        table.insert(all_notes, el)
+      end
+    })
+  return all_notes
+end
+
+function remove_all_notes (blks)
+  return pandoc.walk_block(
+    pandoc.Div(blks),
+    {
+      Note = function(el)
+        return {}
+      end
+    }
+  ).content
 end
 
 function get_all_refs (blks)
@@ -128,7 +171,7 @@ body_count = {
   end,
   
   Note = function(el)
-    local count = count_words_in_notes(el)
+    local count = count_words(el)
     body_words = body_words - count
   end
     
@@ -143,7 +186,7 @@ ref_count = {
   end,
   
   Note = function(el)
-    local count = count_words_in_notes(el)
+    local count = count_words(el)
     ref_words = ref_words - count
   end
 }
@@ -158,7 +201,7 @@ appendix_count = {
   end,
   
   Note = function(el)
-    local count = count_words_in_notes(el)
+    local count = count_words(el)
     appendix_words = appendix_words - count
   end
 }
@@ -180,23 +223,18 @@ function Pandoc(el)
   end
 
   -- Get all notes
-  local all_notes = {}
-  -- try and get notes
-  local test = pandoc.walk_block(pandoc.Div(el.blocks),
-    {
-      Note = function(el) 
-        table.insert(all_notes, el)
-      end
-    }
-    )
-    
+  local all_notes = get_all_notes(el.blocks)
+  -- count words in notes
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
   local note_words_out = note_words .. " words in notes section"
-    
+  
+  -- Remove Tables, Images, and {.no-count} contents
   local untabled = remove_all_tables_images(el.blocks)
-
+  -- Next remove notes
+  local unnote = remove_all_notes(untabled)
+  
   refs_title = el.meta["reference-section-title"]
-  local unreffed = remove_all_refs(untabled)
+  local unreffed = remove_all_refs(unnote)
   
   -- Remove appendix divs from the blocks
   local unappended = remove_all_appendix(unreffed)
@@ -207,7 +245,7 @@ function Pandoc(el)
   --body_words = body_words - note_words
   local body_words_out = body_words .. " words in text body"
   
-  local refs = get_all_refs(untabled)
+  local refs = get_all_refs(unnote)
   pandoc.walk_block(pandoc.Div(refs), ref_count)
   local ref_words_out = ref_words .. " words in reference section"
   
