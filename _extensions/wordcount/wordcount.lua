@@ -168,11 +168,6 @@ body_count = {
   CodeBlock = function(el)
     _,n = el.text:gsub("%S+","")
     body_words = body_words + n
-  end,
-  
-  Note = function(el)
-    local count = count_words(el)
-    body_words = body_words - count
   end
     
 }
@@ -183,11 +178,6 @@ ref_count = {
     if is_word(el.text) then
       ref_words = ref_words + 1
     end
-  end,
-  
-  Note = function(el)
-    local count = count_words(el)
-    ref_words = ref_words - count
   end
 }
 
@@ -198,11 +188,6 @@ appendix_count = {
     if is_word(el.text) then
       appendix_words = appendix_words + 1
     end
-  end,
-  
-  Note = function(el)
-    local count = count_words(el)
-    appendix_words = appendix_words - count
   end
 }
 
