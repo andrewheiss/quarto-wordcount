@@ -42,7 +42,16 @@ references:
 
 ## Introduction
 
+::: {.no-count}
+
+You may use the `{.no-count}` class on a div to skip counting its contents, like this sentence.
+
+::: 
+
+
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@Lovelace1842]. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum [@Turing1936].
+
+
 
 | Column A | Column B |
 |----------|----------|
