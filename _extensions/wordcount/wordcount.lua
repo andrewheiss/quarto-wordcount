@@ -24,11 +24,7 @@ function set_meta(m)
   return m
 end
 
-<<<<<<< HEAD
 function count_words(blks)
-=======
-function count_words(blks) 
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
   local count = 0
   pandoc.walk_block(pandoc.Div(blks), {
     Str = function(el)
@@ -72,12 +68,9 @@ function remove_all_tables_images (blks)
       Image = function(el)
         return {}
       end,
-<<<<<<< HEAD
       Figure = function(el)
         return {}
-      end,
-=======
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
+      end
       Div = function(el)
         if is_no_count_div(el) then
           return {}
@@ -97,11 +90,7 @@ function get_all_notes (blks)
   -- try and get notes
   pandoc.walk_block(pandoc.Div(blks),
     {
-<<<<<<< HEAD
       Note = function(el)
-=======
-      Note = function(el) 
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
         table.insert(all_notes, el)
       end
     })
@@ -226,26 +215,15 @@ function Pandoc(el)
   -- count words in notes
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
   local note_words_out = note_words .. " words in notes section"
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
   -- Remove Tables, Images, and {.no-count} contents
   local untabled = remove_all_tables_images(el.blocks)
   -- Next remove notes
   local unnote = remove_all_notes(untabled)
-<<<<<<< HEAD
 
   refs_title = el.meta["reference-section-title"]
   local unreffed = remove_all_refs(unnote)
 
-=======
-  
-  refs_title = el.meta["reference-section-title"]
-  local unreffed = remove_all_refs(unnote)
-  
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
   -- Remove appendix divs from the blocks
   local unappended = remove_all_appendix(unreffed)
 
@@ -254,11 +232,7 @@ function Pandoc(el)
   -- notes and double counted by body
   --body_words = body_words - note_words
   local body_words_out = body_words .. " words in text body"
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 8e82509dd1e272236216e2510092572bf4697162
   local refs = get_all_refs(unnote)
   pandoc.walk_block(pandoc.Div(refs), ref_count)
   local ref_words_out = ref_words .. " words in reference section"
