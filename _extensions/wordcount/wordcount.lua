@@ -70,7 +70,7 @@ function remove_all_tables_images (blks)
       end,
       Figure = function(el)
         return {}
-      end
+      end,
       Div = function(el)
         if is_no_count_div(el) then
           return {}
