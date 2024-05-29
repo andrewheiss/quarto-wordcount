@@ -8,10 +8,9 @@ contributes:
   format:
     common: 
       filters: 
-      - at: pre-render
-        path: "citeproc.lua"
-      - at: pre-render
-        path: "wordcount.lua"
+      - citeproc.lua
+      - wordcount.lua
+      - quarto
       citeproc: false
     html: default
     pdf: default
