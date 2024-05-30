@@ -37,9 +37,9 @@ return {
     if nargs == 0  then
       return pandoc.Str(0)
     end
-    print(args)
-    local arg = args[1][1].text
-    print(arg)
+    --print(args)
+    local arg = args[1]
+    --print(arg)
     if arg:match("body") then
       count = count + as_num(meta.wordcount_body_words, "wordcount_total_words")
     end
