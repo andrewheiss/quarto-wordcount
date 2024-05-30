@@ -74,7 +74,7 @@ Word counts can be directly included in your document with shortcodes, like so:[
 
 - Use `{{{< words-note >}}}` to include a count of the words in the notes: **{{< words-note >}} words**. You can also reliably count words in the footnotes which would have previously been included in whichever section they were.[^2]
 
-- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`. For example, `{{{< words-sum body-note >}}}` includes a count of the words in the body and notes (**{{{< words-sum body-note >}}} words**); `{{{< words-sum ref-append >}}}` includes a count of the words in the references and appendix (**{{{< words-sum ref-append >}}} words**)
+- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`. For example, `{{{< words-sum body-note >}}}` includes a count of the words in the body and notes (**{{< words-sum body-note >}} words**); `{{{< words-sum ref-append >}}}` includes a count of the words in the references and appendix (**{{< words-sum ref-append >}} words**)
 
 [^1]: **NOTE** shortcodes `{{{< words-body >}}}`, `{{{< words-ref >}}}`, `{{{< words-append >}}}`, and `{{{< words-note >}}}` do not overlap their counts.
 
