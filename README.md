@@ -1,21 +1,20 @@
 
-<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # Quarto word count
 
-- <a href="#why-counting-words-is-hard"
-  id="toc-why-counting-words-is-hard">Why counting words is hard</a>
-- <a href="#using-the-word-count-script"
-  id="toc-using-the-word-count-script">Using the word count script</a>
-  - <a href="#using-as-an-extension" id="toc-using-as-an-extension">Using
-    as an extension</a>
-  - <a href="#using-without-an-extension"
-    id="toc-using-without-an-extension">Using without an extension</a>
-- <a href="#how-this-all-works" id="toc-how-this-all-works">How this all
-  works</a>
-- <a href="#appendices" id="toc-appendices">Appendices</a>
-- <a href="#example" id="toc-example">Example</a>
-- <a href="#credits" id="toc-credits">Credits</a>
+
+- [Why counting words is hard](#why-counting-words-is-hard)
+- [Using the word count script](#using-the-word-count-script)
+  - [Installing](#installing)
+  - [Usage](#usage)
+  - [Terminal output](#terminal-output)
+  - [Shortcodes](#shortcodes)
+  - [Appendices](#appendices)
+- [Example](#example)
+- [Credits](#credits)
+- [How this all works](#how-this-all-works)
+
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 ## Why counting words is hard
 
@@ -61,8 +60,6 @@ bunch of reasons:
     footnote styles), and more importantly, it will not count any of the
     automatically generated references in the final bibliography list.
 
-## Using the word count script
-
 This extension fixes all three of these issues by relying on a [Lua
 filter](_extensions/wordcount/wordcount.lua) to count the words after
 the document has been rendered and before it has been converted to its
@@ -73,40 +70,25 @@ just copied and slightly expanded [that package’s
 `inst/wordcount.lua`](https://github.com/crsh/rmdfiltr/blob/master/inst/wordcount.lua)).
 The filter works really well and [is generally comparable to Word’s word
 count](https://cran.r-project.org/web/packages/rmdfiltr/vignettes/wordcount.html).
+You should definitely glance through the [“How this all works”
+section](#how-this-all-works) to understand… um… how it works.
 
-The word count will appear in the terminal output when rendering the
-document. It shows three different values: (1) the total count, (2) the
-count for the document sans references, and (3) the count for the
-reference list alone.
+## Using the word count script
 
-``` text
-133 total words
------------------------------
-76 words in text body
-57 words in reference section
-```
-
-There are two ways to use the filter: (1) as a formal Quarto format
-extension and (2) as a set of pandoc filters. You should definitely
-glance through the [“How this all works” section](#how-this-all-works)
-to understand… um… how it works.
-
-### Using as an extension
-
-Install the extension in an already-existing project by running this in
-your terminal:
+### Installing
 
 ``` bash
 quarto add andrewheiss/quarto-wordcount
 ```
 
-Or create a brand new project by running this:
+Using {quarto-wordcount} requires Quarto version \>= 1.3.0
 
-``` bash
-quarto use template andrewheiss/quarto-wordcount
-```
+This will install the extension under the `_extensions` subdirectory. If
+you’re using version control, you will want to check in this directory.
 
-You can then specify one of three different output formats in your YAML
+### Usage
+
+You can specify one of three different output formats in your YAML
 settings: `wordcount-html`, `wordcount-pdf`, and `wordcount-docx`:
 
 ``` yaml
@@ -128,42 +110,105 @@ format:
     cap-location: margin
 ```
 
-### Using without an extension
+### Terminal output
 
-Alternatively, if you don’t want to install the extension, download the
-two Lua scripts [`wordcount.lua`](_extensions/wordcount/wordcount.lua)
-and [`citeproc.lua`](_extensions/wordcount/citeproc.lua), put them
-somewhere in your project, and reference them in the YAML front matter
-of your document. Make sure you also disable citeproc so that it doesn’t
-run twice.
+The word count will appear in the terminal output when rendering the
+document. It shows multiple values: (1) the total count, (2) the count
+for the document sans references, and (3) the count for the reference
+list alone.
+
+``` text
+133 total words
+-----------------------------
+76 words in text body
+57 words in reference section
+```
+
+### Shortcodes
+
+There are also multiple shortcodes you can use to include different word
+counts directly in the document:
+
+- Use `{{< words-total >}}` to include a count of all words
+
+- Use `{{< words-body >}}` to include a count of the words in the text
+  body only, omitting the references, notes, and appendix
+
+- Use `{{< words-ref >}}` to include a count of the words in the
+  reference section
+
+- Use `{{< words-append >}}` to include a count of the words in the
+  appendix, which must be wrapped in a div with the `#appendix-count` id
+  ([see below for more details](#appendices))
+
+- Use `{{< words-note >}}` to include a count of the words in the notes:
+
+- Use `{{< words-sum ARG >}}` where `ARG` is some concatenation of the
+  four countable areas: `body`, `ref`, `append`, and `note`.
+
+  For example, `{{< words-sum body-note >}}` includes a count of the
+  words in the body and notes; `{{< words-sum ref-append >}}` includes a
+  count of the words in the references and appendix
+
+You can use shortcodes in your YAML metadata too:
 
 ``` yaml
 title: Something
-format:
-  html:
-    citeproc: false
-    filters: 
-      - at: pre-render
-        path: "citeproc.lua"
-      - at: pre-render
-        path: "wordcount.lua"
+subtitle: "{{< words-total >}} words"
 ```
 
-Or as another option, install the extension like normal, but don’t use
-the `wordcount-html` format and instead refer to the Lua filters that
-live in the extension folder:
+### Appendices
 
-``` yaml
-title: Something
-format: 
-  html:
-    citeproc: false
-    filters: 
-      - at: pre-render
-        path: "_extensions/andrewheiss/wordcount/citeproc.lua"
-      - at: pre-render
-        path: "_extensions/andrewheiss/wordcount/wordcount.lua"
+In academic writing, it’s often helpful to have a separate word count
+for content in the appendices, since things there don’t typically count
+against journal word limits. [Quarto has a neat feature for
+automatically creating an appendix
+section](https://quarto.org/docs/authoring/appendices.html) and moving
+content there automatically as needed. It does this (I think) with a
+fancy Lua filter.
+
+However, Quarto’s appendix-generating process comes *after* any custom
+Lua filters, so even though the final rendered document creates a div
+with the id “appendix”, that div isn’t accessible when counting words
+(since it doesn’t exist yet), so there’s no easy way to extract the
+appendix words from the rest of the text.
+
+So, as a (temporary?) workaround (until I can figure out how to make
+this Lua filter run after the creation of the appendix div?), you can
+get a separate word count for the appendix by creating your own div with
+the id `appendix-count`:
+
+``` markdown
+# Introduction
+
+Regular text goes here.
+
+::: {#appendix-count}
+
+# Appendix {.appendix}
+
+More words here
+
+:::
 ```
+
+That will create this word count:
+
+    5 in the main text + references, with 4 in the appendix
+    -------------------------------------------------------
+    5 words in text body
+    0 words in reference section
+    4 words in appendix section
+
+## Example
+
+You can see a minimal sample document at [`template.qmd`](template.qmd).
+
+## Credits
+
+The original [`wordcount.lua`](_extensions/wordcount/wordcount.lua)
+filter came from [Frederik Aust’s (@crsh)](https://github.com/crsh)
+[{rmdfiltr}](https://github.com/crsh/rmdfiltr) package.
 
 ## How this all works
 
@@ -230,8 +275,7 @@ format:
   html:
     citeproc: false
     filters: 
-      - at: pre-render
-        path: "/path/to/wordcount.lua"
+      - "/path/to/wordcount.lua"
 ```
 
 However, there’s no obvious way to reposition the `--citeproc` argument
@@ -259,10 +303,9 @@ format:
   html:
     citeproc: false
     filters: 
-      - at: pre-render
-        path: "/path/to/citeproc.lua"
-      - at: pre-render
-        path: "/path/to/wordcount.lua"
+      - "/path/to/citeproc.lua"
+      - "/path/to/wordcount.lua"
+      - quarto
 ```
 
 This creates a pandoc command that looks something like this, feeding
@@ -288,56 +331,3 @@ format:
 ```
 
 But that doesn’t work yet.
-
-## Appendices
-
-In academic writing, it’s often helpful to have a separate word count
-for content in the appendices, since things there don’t typically count
-against journal word limits. [Quarto has a neat feature for
-automatically creating an appendix
-section](https://quarto.org/docs/authoring/appendices.html) and moving
-content there automatically as needed. It does this (I think) with a
-fancy Lua filter.
-
-However, Quarto’s appendix-generating process comes *after* any custom
-Lua filters, so even though the final rendered document creates a div
-with the id “appendix”, that div isn’t accessible when counting words
-(since it doesn’t exist yet), so there’s no easy way to extract the
-appendix words from the rest of the text.
-
-So, as a temporary workaround until I can figure out how to make this
-Lua filter run after the creation of the appendix div, you can get a
-separate word count for the appendix by creating your own div with the
-id `appendix-count`:
-
-``` markdown
-# Introduction
-
-Regular text goes here.
-
-::: {#appendix-count}
-
-# Appendix {.appendix}
-
-More words here
-
-:::
-```
-
-That will create this word count:
-
-    5 in the main text + references, with 4 in the appendix
-    -------------------------------------------------------
-    5 words in text body
-    0 words in reference section
-    4 words in appendix section
-
-## Example
-
-You can see a minimal sample document at [`template.qmd`](template.qmd).
-
-## Credits
-
-The [`wordcount.lua`](_extensions/wordcount/wordcount.lua) filter comes
-from [Frederik Aust’s (@crsh)](https://github.com/crsh)
-[{rmdfiltr}](https://github.com/crsh/rmdfiltr) package.
