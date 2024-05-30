@@ -42,15 +42,7 @@ references:
 
 ## Introduction
 
-::: {.no-count}
-
-You may use the `{.no-count}` class on a div to skip counting its contents, like this sentence.
-
-::: 
-
-
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@Lovelace1842]. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum [@Turing1936].
-
 
 
 | Column A | Column B |
@@ -60,16 +52,41 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 : Here's a table with a caption that doesn't get counted
 
-Word counts can now be directly included with short codes. For example, use {{{< words-body >}}} to include body word count: {{< words-body >}}, or {{{< words-total >}}} to include all words tallied by this filter: {{< words-total >}}.[^1] You can also reliably count words in the footnotes which would have previously been included in whichever section they were.[^2]
+::: {.no-count}
 
-[^1]: **NOTE** short codes {{{< words-body >}}}, {{{< words-ref >}}}, {{{< words-append >}}}, and {{{< words-note >}}} do not overlap their counts.
+### No counting
 
-[^2]: Count Footnotes words with {{{< words-note >}}}: {{< words-note >}}
+You can use the `{.no-count}` class on a [fenced div](https://quarto.org/docs/authoring/markdown-basics.html#sec-divs-and-spans) to skip counting its contents, like this section.
 
-This filter may not always produce accurate counts for documents that use short codes, specifically short codes that run after this filter. If a shortcode has multiple arguments but only return one word, then it is possible that the word count is inflated,[^3] and conversely deflated if it spawns more words.
+::: 
+
+### Shortcodes
+
+Word counts can be directly included in your document with shortcodes, like so:[^1]
+
+- Use `{{{< words-total >}}}` to include a count of all words: **{{< words-total >}} words**
+
+- Use `{{{< words-body >}}}` to include a count of the words in the text body only, omitting the references, notes, and appendix: **{{< words-body >}} words**
+
+- Use `{{{< words-ref >}}}` to include a count of the words in the reference section: **{{< words-ref >}} words**
+
+- Use `{{{< words-append >}}}` to include a count of the words in the appendix, which must be wrapped in a div with the `#appendix-count` id (see below for an example): **{{< words-append >}} words**
+
+- Use `{{{< words-note >}}}` to include a count of the words in the notes: **{{< words-note >}} words**. You can also reliably count words in the footnotes which would have previously been included in whichever section they were.[^2]
+
+- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`. For example, `{{{< words-sum body-note >}}}` includes a count of the words in the body and notes (**{{{< words-sum body-note >}}} words**); `{{{< words-sum ref-append >}}}` includes a count of the words in the references and appendix (**{{{< words-sum ref-append >}}} words**)
+
+[^1]: **NOTE** shortcodes `{{{< words-body >}}}`, `{{{< words-ref >}}}`, `{{{< words-append >}}}`, and `{{{< words-note >}}}` do not overlap their counts.
+
+[^2]: Count footnote words with `{{{< words-note >}}}`: {{< words-note >}}
 
 
-[^3]: An example in this extension is {{{< words-sum ARG >}}}, where `ARG` is formatted as "ref-note" or "body-append", etc, to count specific sections together. Since `words-sum` has two words to construct the short code but only one word is returned, the region that uses this short code is inflated by 1.
+### Minor issues with shortcode counting
+
+This filter may not always produce accurate counts for documents that use shortcodes, specifically shortcodes that run after this filter. If a shortcode has multiple arguments but only returns one word, then it is possible that the word count is inflated,[^3] and conversely deflated if it returns more words.
+
+[^3]: An example in this extension is `{{{< words-sum ARG >}}}`, where `ARG` is formatted as "ref-note" or "body-append", etc., to count specific sections together. Since `words-sum` has two words to construct the shortcode but only one word is returned, the region that uses this shortcode is inflated by one.
+
 
 ## Conclusion
 
@@ -78,10 +95,11 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 
 ## References [^4]
 
-[^4]: Count reference words with {{{< words-ref >}}}: {{< words-ref >}}
+[^4]: Count reference words with `{{{< words-ref >}}}`: {{< words-ref >}}
 
 ::: {#refs}
 :::
+
 
 ::: {#appendix-count}
 ## Appendix [^5] {.appendix}
@@ -89,4 +107,4 @@ Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 :::
 
-[^5]: Count Appendix words with {{{< words-append >}}}: {{< words-append >}}
+[^5]: Count appendix words with `{{{< words-append >}}}`: {{< words-append >}}
