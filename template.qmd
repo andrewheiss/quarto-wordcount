@@ -42,7 +42,16 @@ references:
 
 ## Introduction
 
+::: {.no-count}
+
+You may use the `{.no-count}` class on a div to skip counting its contents, like this sentence.
+
+::: 
+
+
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@Lovelace1842]. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum [@Turing1936].
+
+
 
 | Column A | Column B |
 |----------|----------|
@@ -51,19 +60,33 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 : Here's a table with a caption that doesn't get counted
 
+Word counts can now be directly included with short codes. For example, use {{{< words-body >}}} to include body word count: {{< words-body >}}, or {{{< words-total >}}} to include all words tallied by this filter: {{< words-total >}}.[^1] You can also reliably count words in the footnotes which would have previously been included in whichever section they were.[^2]
+
+[^1]: **NOTE** short codes {{{< words-body >}}}, {{{< words-ref >}}}, {{{< words-append >}}}, and {{{< words-note >}}} do not overlap their counts.
+
+[^2]: Count Footnotes words with {{{< words-note >}}}: {{< words-note >}}
+
+This filter may not always produce accurate counts for documents that use short codes, specifically short codes that run after this filter. If a shortcode has multiple arguments but only return one word, then it is possible that the word count is inflated,[^3] and conversely deflated if it spawns more words.
+
+
+[^3]: An example in this extension is {{{< words-sum ARG >}}}, where `ARG` is formatted as "ref-note" or "body-append", etc, to count specific sections together. Since `words-sum` has two words to construct the short code but only one word is returned, the region that uses this short code is inflated by 1.
+
 ## Conclusion
 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 
-## References 
+
+## References [^4]
+
+[^4]: Count reference words with {{{< words-ref >}}}: {{< words-ref >}}
 
 ::: {#refs}
 :::
 
 ::: {#appendix-count}
-
-## Appendix {.appendix}
+## Appendix [^5] {.appendix}
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-
 :::
+
+[^5]: Count Appendix words with {{{< words-append >}}}: {{< words-append >}}
