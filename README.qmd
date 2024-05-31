@@ -102,7 +102,7 @@ You can use shortcodes in your YAML metadata too:
 
 ```yaml
 title: Something
-subtitle: "{{{< words-total >}}} words"
+subtitle: "{{{< words-sum body-note-ref >}}} words"
 ```
 
 ### Appendices
