@@ -1,0 +1,6 @@
+---
+title: Basic count
+format: wordcount-markdown
+---
+
+Here are four words.

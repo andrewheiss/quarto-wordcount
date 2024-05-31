@@ -1,0 +1,12 @@
+---
+title: Body + appendix
+format: wordcount-markdown
+---
+
+Here are four words.
+
+::: {#appendix-count}
+
+There are five words here.
+
+:::

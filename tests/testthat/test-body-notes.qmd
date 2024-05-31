@@ -1,0 +1,6 @@
+---
+title: Body + notes
+format: wordcount-markdown
+---
+
+Here are four words.^[And five in the notes.]
