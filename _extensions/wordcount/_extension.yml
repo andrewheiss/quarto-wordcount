@@ -19,3 +19,4 @@ contributes:
     html: default
     pdf: default
     docx: default
+    markdown: default
