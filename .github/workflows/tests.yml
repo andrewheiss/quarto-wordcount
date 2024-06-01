@@ -1,0 +1,57 @@
+name: testing
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testing:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.quarto }})
+    
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: "false"
+      _R_CHECK_TESTS_NLINES_: 0
+      R_NOT_CRAN: true
+      R_GH: true
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: windows-latest, r: "release", quarto: "" }
+          - { os: macOS-latest, r: "release", quarto: "" }
+          - { os: ubuntu-latest, r: "release", quarto: "" }
+          - { os: ubuntu-latest, r: "release", quarto: "pre-release" }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with: 
+          version: ${{ matrix.config.quarto }}
+      
+      - name: Set up R  
+        uses: r-lib/actions/setup-r@v2
+      
+      - name: Set up R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 1
+          extra-packages: |
+            any::fs
+            any::here
+            any::knitr
+            any::quarto
+            any::rmarkdown
+            any::testthat
+            any::tools
+            any::withr
+      
+      - name: Test extension
+        run: Rscript -e "testthat::test_dir(path = 'tests/testthat')"
