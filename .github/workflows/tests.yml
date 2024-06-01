@@ -48,15 +48,6 @@ jobs:
         with:
           cache-version: 1
           use-public-rspm: true
-          extra-packages: |
-            any::fs
-            any::here
-            any::knitr
-            any::quarto
-            any::rmarkdown
-            any::testthat
-            any::tools
-            any::withr
       
       - name: Test extension
         run: Rscript -e "testthat::test_dir(path = 'tests/testthat')"
