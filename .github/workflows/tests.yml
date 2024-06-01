@@ -17,14 +17,16 @@ jobs:
       R_NOT_CRAN: true
       R_GH: true
       GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+      QUARTO_VERSION: ${{ matrix.config.quarto == '' && '' || matrix.config.quarto }}
+
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - { os: windows-latest, r: "release", quarto: "latest" }
-          - { os: macOS-latest, r: "release", quarto: "latest" }
-          - { os: ubuntu-latest, r: "release", quarto: "latest" }
+          - { os: windows-latest, r: "release", quarto: "" }
+          - { os: macOS-latest, r: "release", quarto: "" }
+          - { os: ubuntu-latest, r: "release", quarto: "" }
           - { os: ubuntu-latest, r: "release", quarto: "pre-release" }
 
     steps:
@@ -34,7 +36,7 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with: 
-          version: ${{ matrix.config.quarto }}
+          version: ${{ env.QUARTO_VERSION }}
       
       - name: Set up R  
         uses: r-lib/actions/setup-r@v2
