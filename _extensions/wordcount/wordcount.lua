@@ -158,7 +158,7 @@ end
 -- Function for printing word counts to the terminal
 function print_word_counts()
   
-  local manuscript_words = body_words + note_words + ref_words
+  local manuscript_words = body_words + note_words
   
   -- Use a bullet character in terminals that support UTF-8
   local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
