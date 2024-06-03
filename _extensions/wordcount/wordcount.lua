@@ -7,15 +7,13 @@
   https://github.com/pandoc/lua-filters/blob/master/wordcount/wordcount.lua
   and
   https://github.com/pandoc/lua-filters/blob/master/section-refs/section-refs.lua
-  ]]
+]]
 
 local body_words = 0
 local ref_words = 0
 local note_words = 0
 local appendix_words = 0
 local total_words = 0
-
-local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
 
 function set_meta(m)
   m.wordcount_body_words = body_words
@@ -50,11 +48,11 @@ function is_no_count_div (blk)
 end
 
 function is_table (blk)
-   return (blk.t == "Table")
+  return (blk.t == "Table")
 end
 
 function is_image (blk)
-   return (blk.t == "Image" or blk.t == "Figure")
+  return (blk.t == "Image" or blk.t == "Figure")
 end
 
 function is_word (text)
@@ -63,27 +61,27 @@ end
 
 function remove_all_tables_images (blks)
   return pandoc.walk_block(pandoc.Div(blks),
-    {
-      Table = function(el)
+  {
+    Table = function(el)
+      return {}
+    end,
+    Image = function(el)
+      return {}
+    end,
+    Figure = function(el)
+      return {}
+    end,
+    Div = function(el)
+      if is_no_count_div(el) then
         return {}
-      end,
-      Image = function(el)
-        return {}
-      end,
-      Figure = function(el)
-        return {}
-      end,
-      Div = function(el)
-        if is_no_count_div(el) then
-          return {}
-        end
-        return el
       end
-    }).content
+      return el
+    end
+  }).content
 end
 
 function is_ref_div (blk)
-   return (blk.t == "Div" and blk.identifier == "refs")
+  return (blk.t == "Div" and blk.identifier == "refs")
 end
 
 function get_all_notes (blks)
@@ -91,116 +89,119 @@ function get_all_notes (blks)
   local all_notes = {}
   -- try and get notes
   pandoc.walk_block(pandoc.Div(blks),
-    {
-      Note = function(el)
-        table.insert(all_notes, el)
-      end
-    })
+  {
+    Note = function(el)
+      table.insert(all_notes, el)
+    end
+  })
   return all_notes
 end
 
 function remove_all_notes (blks)
   return pandoc.walk_block(
-    pandoc.Div(blks),
-    {
-      Note = function(el)
-        return {}
-      end
-    }
-  ).content
+  pandoc.Div(blks),
+  {
+    Note = function(el)
+      return {}
+    end
+  }
+).content
 end
 
 function get_all_refs (blks)
   local out = {}
-   for _, b in pairs(blks) do
-      if is_ref_div(b) then
-	      table.insert(out, b)
-      end
-   end
-   return out
+  for _, b in pairs(blks) do
+    if is_ref_div(b) then
+      table.insert(out, b)
+    end
+  end
+  return out
 end
 
 function remove_all_refs (blks)
-   local out = {}
-   for _, b in pairs(blks) do
-      if not (is_ref_div(b)) then
-	      table.insert(out, b)
-      end
-   end
-   return out
+  local out = {}
+  for _, b in pairs(blks) do
+    if not (is_ref_div(b)) then
+      table.insert(out, b)
+    end
+  end
+  return out
 end
 
 -- Check if the block is an appendix div
 function is_appendix_div (blk)
-   return (blk.t == "Div" and blk.identifier == "appendix-count")
+  return (blk.t == "Div" and blk.identifier == "appendix-count")
 end
 
 -- Get all appendix divs
 function get_all_appendix (blks)
   local out = {}
-   for _, b in pairs(blks) do
-      if is_appendix_div(b) then
-          table.insert(out, b)
-      end
-   end
-   return out
+  for _, b in pairs(blks) do
+    if is_appendix_div(b) then
+      table.insert(out, b)
+    end
+  end
+  return out
 end
 
 -- Remove all appendix divs
 function remove_all_appendix (blks)
-   local out = {}
-   for _, b in pairs(blks) do
-      if not is_appendix_div(b) then
-          table.insert(out, b)
-      end
-   end
-   return out
+  local out = {}
+  for _, b in pairs(blks) do
+    if not is_appendix_div(b) then
+      table.insert(out, b)
+    end
+  end
+  return out
 end
 
 -- Function for printing word counts to the terminal
 function print_word_counts()
+  
+  local manuscript_words = body_words + note_words + ref_words
+  
+  -- Use a bullet character in terminals that support UTF-8
+  local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
+  
+  -- Format these different numbers
+  local total_words_out = string.format("%d total words", total_words)
+  local manuscript_words_out = string.format("%d words in body, notes, and references", manuscript_words)
+  local body_words_out = string.format("%d words in text body", body_words)
+  local note_words_out = note_words > 0 and string.format("%d words in notes", note_words) or ""
+  local ref_words_out = ref_words > 0 and string.format("%d words in reference section", ref_words) or ""
+  local appendix_words_out = appendix_words > 0 and string.format("%d words in appendix section", appendix_words) or ""
+  
+  local longest_out = math.max(
+  #total_words_out,
+  #manuscript_words_out,
+  #body_words_out,
+  #note_words_out,
+  #ref_words_out,
+  #appendix_words_out
+)
 
-    local manuscript_words = body_words + note_words + ref_words
+print("Overall totals:")
+print(string.rep("-", longest_out + 3))
+print(bullet .. total_words_out)
+print(bullet .. manuscript_words_out)
 
-    -- Format these different numbers
-    local total_words_out = string.format("%d total words", total_words)
-    local manuscript_words_out = string.format("%d words in body, notes, and references", manuscript_words)
-    local body_words_out = string.format("%d words in text body", body_words)
-    local note_words_out = note_words > 0 and string.format("%d words in notes", note_words) or ""
-    local ref_words_out = ref_words > 0 and string.format("%d words in reference section", ref_words) or ""
-    local appendix_words_out = appendix_words > 0 and string.format("%d words in appendix section", appendix_words) or ""
+print("\nSection totals:")
+print(string.rep("-", longest_out + 3))
+print(bullet .. body_words_out)
 
-    local longest_out = math.max(
-        #total_words_out,
-        #manuscript_words_out,
-        #body_words_out,
-        #note_words_out,
-        #ref_words_out,
-        #appendix_words_out
-    )
+if note_words_out ~= "" then
+  print(bullet .. note_words_out)
+end
 
-    print("Overall totals:")
-    print(string.rep("-", longest_out + 3))
-    print(bullet .. total_words_out)
-    print(bullet .. manuscript_words_out)
+if ref_words_out ~= "" then
+  print(bullet .. ref_words_out)
+end
 
-    print("\nSection totals:")
-    print(string.rep("-", longest_out + 3))
-    print(bullet .. body_words_out)
+if appendix_words_out ~= "" then
+  print(bullet .. appendix_words_out)
+end
 
-    if note_words_out ~= "" then
-        print(bullet .. note_words_out)
-    end
-
-    if ref_words_out ~= "" then
-        print(bullet .. ref_words_out)
-    end
-
-    if appendix_words_out ~= "" then
-        print(bullet .. appendix_words_out)
-    end
-
-    print()
+print()
 end
 
 body_count = {
@@ -210,17 +211,17 @@ body_count = {
       body_words = body_words + 1
     end
   end,
-
+  
   Code = function(el)
     _,n = el.text:gsub("%S+","")
     body_words = body_words + n
   end,
-
+  
   CodeBlock = function(el)
     _,n = el.text:gsub("%S+","")
     body_words = body_words + n
   end
-
+  
 }
 
 ref_count = {
@@ -257,29 +258,29 @@ function Pandoc(el)
     io.stderr:write("WARNING: pandoc >= 2.1 required for wordcount filter\n")
     return el
   end
-
+  
   -- Get all notes
   local all_notes = get_all_notes(el.blocks)
   -- count words in notes
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
-
+  
   -- Remove Tables, Images, and {.no-count} contents
   local untabled = remove_all_tables_images(el.blocks)
   -- Next remove notes
   local unnote = remove_all_notes(untabled)
-
+  
   refs_title = el.meta["reference-section-title"]
   local unreffed = remove_all_refs(unnote)
-
+  
   -- Remove appendix divs from the blocks
   local unappended = remove_all_appendix(unreffed)
-
+  
   -- Walk through the unappended blocks and count the words
   pandoc.walk_block(pandoc.Div(unappended), body_count)
   
   local refs = get_all_refs(unnote)
   pandoc.walk_block(pandoc.Div(refs), ref_count)
-
+  
   -- Get all appendix divs
   local appendix = get_all_appendix(unreffed)
   -- Walk through the appendix divs and count the words
@@ -287,10 +288,10 @@ function Pandoc(el)
   
   -- Calculate total
   total_words = body_words + note_words + ref_words + appendix_words
-
+  
   -- Show counts in terminal
   print_word_counts()
-
+  
   -- modify meta data for words.lua
   el.meta = set_meta(el.meta)
   
