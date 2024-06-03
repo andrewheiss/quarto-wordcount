@@ -131,15 +131,15 @@ document. It shows multiple values:
 ``` text
 Overall totals:
 --------------------------------
-• 451 total words
-• 378 words in body and notes
+- 451 total words
+- 378 words in body and notes
 
 Section totals:
 --------------------------------
-• 315 words in text body
-• 63 words in notes
-• 53 words in reference section
-• 20 words in appendix section
+- 315 words in text body
+- 63 words in notes
+- 53 words in reference section
+- 20 words in appendix section
 ```
 
 ### Shortcodes
