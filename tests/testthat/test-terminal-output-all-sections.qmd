@@ -1,0 +1,30 @@
+---
+title: All sections
+format: wordcount-markdown
+
+references:
+- id: Lovelace1842
+  author:
+    - family: Lovelace
+      given: Ada Augusta
+  citation-key: Lovelace1842
+  container-title: Taylor's Scientific Memoirs
+  issued:
+    - year: 1842
+  language: en-GB
+  page: 666–731
+  title: >-
+    Sketch of the analytical engine invented by Charles Babbage, by LF Menabrea,
+    officer of the military engineers, with notes upon the memoir by the
+    translator
+  type: article-journal
+  volume: 3
+---
+
+Here are four words [@Lovelace1842].^[A note]
+
+::: {#appendix-count}
+
+There are five words here.
+
+:::

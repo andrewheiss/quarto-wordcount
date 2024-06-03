@@ -45,7 +45,7 @@ create_local_quarto_project <- function(env = parent.frame(), test_file = NULL) 
 #' the .md extension.
 #'
 #' @param filename The name of the file.
-#' @return A list containing the absolute path, the base filename with the .qmd
+#' @returns A list containing the absolute path, the base filename with the .qmd
 #'   extension, and the base filename with the .md extension.
 test_file_parts <- function(filename) {
   list(
@@ -55,6 +55,23 @@ test_file_parts <- function(filename) {
   )
 }
 
+#' Extract word count section from terminal output
+#'
+#' This function locates the content between "Overall totals" and Quarto's
+#' "Output created" line in the terminal output that Quarto emits.
+#'
+#' @param raw_output The results from `quarto::quarto_render()`, captured with
+#'   `capture.output()`
+#' @returns A character object containing the word count section from the
+#'   terminal output
+extract_output <- function(raw_output) {
+  start_index <- grep("^Overall totals:", raw_output)
+  end_index <- grep("^Output created:", raw_output) - 1
+  actual_output <- paste0(raw_output[start_index:end_index], collapse = "\n")
+  actual_output
+}
+
+
 #' Get word counts from a Markdown file
 #'
 #' This function parses the YAML front matter of a markdown file, which should
@@ -62,8 +79,7 @@ test_file_parts <- function(filename) {
 #' counts.
 #'
 #' @param filename The name of the file.
-#' @return A list containing all the `wordcount__words*` entries.
-#' @export
+#' @returns A list containing all the `wordcount__words*` entries.
 get_wordcounts <- function(filename) {
   yaml_metadata <- rmarkdown::yaml_front_matter(filename)
   yaml_metadata <- yaml_metadata[grep("^wordcount", names(yaml_metadata))]

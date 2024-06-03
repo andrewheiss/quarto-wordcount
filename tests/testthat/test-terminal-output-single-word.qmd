@@ -1,0 +1,6 @@
+---
+title: Single word in notes
+format: wordcount-markdown
+---
+
+Here are four words.^[Note]
