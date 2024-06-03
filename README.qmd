@@ -138,9 +138,9 @@ There are also multiple shortcodes you can use to include different word counts 
 
 - Use `{{{< words-append >}}}` to include a count of the words in the appendix, which must be wrapped in a div with the `#appendix-count` id ([see below for more details](#appendices))
 
-- Use `{{{< words-note >}}}` to include a count of the words in the notes: 
+- Use `{{{< words-note >}}}` to include a count of the words in the notes
 
-- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`.
+- Use `{{{< words-sum ARG >}}}` where `ARG` is some concatenation of the four countable areas: `body`, `ref`, `append`, and `note`
 
   For example, `{{{< words-sum body-note >}}}` includes a count of the words in the body and notes; `{{{< words-sum ref-append >}}}` includes a count of the words in the references and appendix
 
@@ -210,7 +210,7 @@ In order to include citations in the word count, we have to feed the word count 
 pandoc whatever.md --output whatever.html --lua-filter wordcount.lua --citeproc
 ```
 
-The order of these arguments matter, so having `--lua-filter wordcount.lua` come before `--citeproc` makes it so the words will be counted before the bibliography is generated, which isn't great.
+The order of these arguments matters, so having `--lua-filter wordcount.lua` come before `--citeproc` makes it so the words will be counted before the bibliography is generated, which isn't great.
 
 {rmdfiltr} gets around this ordering issue by editing the YAML front matter to (1) disable citeproc in general and (2) specify the `--citeproc` flag before running the filter:
 
