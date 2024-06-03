@@ -26,8 +26,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - { os: windows-latest, r: "release", quarto: "" }
-          # - { os: macOS-latest, r: "release", quarto: "" }
+          - { os: windows-latest, r: "release", quarto: "" }
+          - { os: macOS-latest, r: "release", quarto: "" }
           - { os: ubuntu-latest, r: "release", quarto: "" }
           - { os: ubuntu-latest, r: "release", quarto: "pre-release" }
 
