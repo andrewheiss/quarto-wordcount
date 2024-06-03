@@ -70,7 +70,7 @@ extract_output <- function(raw_output) {
   actual_output <- paste0(raw_output[start_index:end_index], collapse = "\n")
   
   # Remove Windows's \r linebreaks from the output 
-  actual_output <- gsub("\r\n", "\n", actual_output)
+  actual_output <- gsub("\r", "", actual_output)
   
   actual_output
 }
