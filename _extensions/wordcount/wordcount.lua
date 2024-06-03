@@ -36,6 +36,7 @@ function count_words(blks)
   return count
 end
 
+-- Ignore content in `no-count` divs
 function is_no_count_div (blk)
   if (blk and blk.t=="Div" and blk.classes and #blk.classes > 0) then
     for _, class in pairs(blk.classes) do
@@ -85,9 +86,8 @@ function is_ref_div (blk)
 end
 
 function get_all_notes (blks)
-  -- Get all notes
   local all_notes = {}
-  -- try and get notes
+
   pandoc.walk_block(pandoc.Div(blks),
   {
     Note = function(el)
@@ -236,7 +236,6 @@ ref_count = {
 -- Count words in the appendix
 appendix_count = {
   Str = function(el)
-    -- we don't count a word if it's entirely punctuation:
     if is_word(el.text) then
       appendix_words = appendix_words + 1
     end
@@ -261,12 +260,12 @@ function Pandoc(el)
   
   -- Get all notes
   local all_notes = get_all_notes(el.blocks)
-  -- count words in notes
+  -- Count words in notes
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
   
-  -- Remove Tables, Images, and {.no-count} contents
+  -- Remove tables, images, and {.no-count} contents
   local untabled = remove_all_tables_images(el.blocks)
-  -- Next remove notes
+  -- Next, remove notes
   local unnote = remove_all_notes(untabled)
   
   refs_title = el.meta["reference-section-title"]
@@ -292,7 +291,7 @@ function Pandoc(el)
   -- Show counts in terminal
   print_word_counts()
   
-  -- modify meta data for words.lua
+  -- Modify metadata for words.lua
   el.meta = set_meta(el.meta)
   
   return el
