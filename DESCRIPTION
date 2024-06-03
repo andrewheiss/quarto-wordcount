@@ -1,6 +1,6 @@
 Package: quarto-wordcount
 Title: Counts Words in Quarto Documents
-Version: 1.4.0
+Version: 1.5
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: 
