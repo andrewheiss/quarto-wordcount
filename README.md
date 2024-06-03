@@ -9,6 +9,7 @@
   - [Usage](#usage)
   - [Terminal output](#terminal-output)
   - [Shortcodes](#shortcodes)
+  - [No counting](#no-counting)
   - [Appendices](#appendices)
 - [Example](#example)
 - [Credits](#credits)
@@ -173,6 +174,21 @@ You can use shortcodes in your YAML metadata too:
 ``` yaml
 title: Something
 subtitle: "{{< words-sum body-note-ref >}} words"
+```
+
+### No counting
+
+If you want to omit text from the word count, you can include it in a
+[fenced
+div](https://quarto.org/docs/authoring/markdown-basics.html#sec-divs-and-spans)
+with the `{.no-count}` class:
+
+``` markdown
+::: {.no-count}
+
+These words don't count.
+
+:::
 ```
 
 ### Appendices

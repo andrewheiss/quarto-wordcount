@@ -118,6 +118,18 @@ title: Something
 subtitle: "{{{< words-sum body-note-ref >}}} words"
 ```
 
+### No counting
+
+If you want to omit text from the word count, you can include it in a [fenced div](https://quarto.org/docs/authoring/markdown-basics.html#sec-divs-and-spans) with the `{.no-count}` class:
+
+````markdown
+::: {.no-count}
+
+These words don't count.
+
+:::
+````
+
 ### Appendices
 
 In academic writing, it's often helpful to have a separate word count for content in the appendices, since things there don't typically count against journal word limits. [Quarto has a neat feature for automatically creating an appendix section](https://quarto.org/docs/authoring/appendices.html) and moving content there automatically as needed. It does this (I think) with a fancy Lua filter.
