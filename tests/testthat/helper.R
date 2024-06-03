@@ -69,7 +69,7 @@ extract_output <- function(raw_output) {
   end_index <- grep("^Output created:", raw_output) - 1
   actual_output <- paste0(raw_output[start_index:end_index], collapse = "\n")
   
-  # Switch Windows-style \r\n linebreaks to \n
+  # Remove Windows's \r linebreaks from the output 
   actual_output <- gsub("\r\n", "\n", actual_output)
   
   actual_output
