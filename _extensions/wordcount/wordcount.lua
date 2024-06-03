@@ -160,10 +160,6 @@ function print_word_counts()
   
   local manuscript_words = body_words + note_words
   
-  -- Use a bullet character in terminals that support UTF-8
-  local bullet = (os.getenv("OS"):find("^Windows") or 
-                  os.getenv("LANG"):find("UTF%-8$")) and "• " or "* "
-  
   -- Format these different numbers     
   local total_words_out = string.format(
     "%d total %s",
@@ -206,23 +202,23 @@ function print_word_counts()
 
   print("Overall totals:")
   print(string.rep("-", longest_out + 3))
-  print(bullet .. total_words_out)
-  print(bullet .. manuscript_words_out)
+  print("- " .. total_words_out)
+  print("- " .. manuscript_words_out)
 
   print("\nSection totals:")
   print(string.rep("-", longest_out + 3))
-  print(bullet .. body_words_out)
+  print("- " .. body_words_out)
 
   if note_words_out ~= "" then
-    print(bullet .. note_words_out)
+    print("- " .. note_words_out)
   end
 
   if ref_words_out ~= "" then
-    print(bullet .. ref_words_out)
+    print("- " .. ref_words_out)
   end
 
   if appendix_words_out ~= "" then
-    print(bullet .. appendix_words_out)
+    print("- " .. appendix_words_out)
   end
 
   print()
