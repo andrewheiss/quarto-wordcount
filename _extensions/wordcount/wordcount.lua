@@ -15,12 +15,14 @@ local note_words = 0
 local appendix_words = 0
 local total_words = 0
 
+local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
+
 function set_meta(m)
   m.wordcount_body_words = body_words
   m.wordcount_ref_words = ref_words
   m.wordcount_appendix_words = appendix_words
   m.wordcount_note_words = note_words
-  m.wordcount_total_words = body_words + ref_words + appendix_words + note_words
+  m.wordcount_total_words = total_words
   return m
 end
 
@@ -155,6 +157,52 @@ function remove_all_appendix (blks)
    return out
 end
 
+-- Function for printing word counts to the terminal
+function print_word_counts()
+
+    local manuscript_words = body_words + note_words + ref_words
+
+    -- Format these different numbers
+    local total_words_out = string.format("%d total words", total_words)
+    local manuscript_words_out = string.format("%d words in body, notes, and references", manuscript_words)
+    local body_words_out = string.format("%d words in text body", body_words)
+    local note_words_out = note_words > 0 and string.format("%d words in notes", note_words) or ""
+    local ref_words_out = ref_words > 0 and string.format("%d words in reference section", ref_words) or ""
+    local appendix_words_out = appendix_words > 0 and string.format("%d words in appendix section", appendix_words) or ""
+
+    local longest_out = math.max(
+        #total_words_out,
+        #manuscript_words_out,
+        #body_words_out,
+        #note_words_out,
+        #ref_words_out,
+        #appendix_words_out
+    )
+
+    print("Overall totals:")
+    print(string.rep("-", longest_out + 3))
+    print(bullet .. total_words_out)
+    print(bullet .. manuscript_words_out)
+
+    print("\nSection totals:")
+    print(string.rep("-", longest_out + 3))
+    print(bullet .. body_words_out)
+
+    if note_words_out ~= "" then
+        print(bullet .. note_words_out)
+    end
+
+    if ref_words_out ~= "" then
+        print(bullet .. ref_words_out)
+    end
+
+    if appendix_words_out ~= "" then
+        print(bullet .. appendix_words_out)
+    end
+
+    print()
+end
+
 body_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
@@ -203,7 +251,7 @@ note_count = {
 }
 
 
-
+-- Actual word counting
 function Pandoc(el)
   if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
     io.stderr:write("WARNING: pandoc >= 2.1 required for wordcount filter\n")
@@ -214,7 +262,6 @@ function Pandoc(el)
   local all_notes = get_all_notes(el.blocks)
   -- count words in notes
   pandoc.walk_block(pandoc.Div(all_notes), note_count)
-  local note_words_out = note_words .. " words in notes section"
 
   -- Remove Tables, Images, and {.no-count} contents
   local untabled = remove_all_tables_images(el.blocks)
@@ -229,46 +276,21 @@ function Pandoc(el)
 
   -- Walk through the unappended blocks and count the words
   pandoc.walk_block(pandoc.Div(unappended), body_count)
-  -- notes and double counted by body
-  --body_words = body_words - note_words
-  local body_words_out = body_words .. " words in text body"
   
   local refs = get_all_refs(unnote)
   pandoc.walk_block(pandoc.Div(refs), ref_count)
-  local ref_words_out = ref_words .. " words in reference section"
 
   -- Get all appendix divs
   local appendix = get_all_appendix(unreffed)
   -- Walk through the appendix divs and count the words
   pandoc.walk_block(pandoc.Div(appendix), appendix_count)
-  -- Print out the count of words in the appendix
-  local appendix_words_out = appendix_words .. " words in appendix section"
+  
+  -- Calculate total
+  total_words = body_words + note_words + ref_words + appendix_words
 
-  local total_words_out = ""
-  if appendix_words > 0 then
-    total_words_out = body_words + ref_words .. " in the main text + references, with " .. appendix_words .. " in the appendix"
-  else
-    total_words_out = body_words + ref_words + appendix_words .. " total words"
-  end
+  -- Show counts in terminal
+  print_word_counts()
 
-  local longest_out = math.max(string.len(body_words_out),
-                               string.len(ref_words_out),
-                               string.len(total_words_out))
-
-  print(total_words_out)
-  print(string.rep("-", longest_out))
-  print(body_words_out)
-  print(ref_words_out)
-
-  if note_words > 0 then
-    print(note_words_out)
-  end
-
-  if appendix_words > 0 then
-    print(appendix_words_out)
-  end
-
-  print()
   -- modify meta data for words.lua
   el.meta = set_meta(el.meta)
   
