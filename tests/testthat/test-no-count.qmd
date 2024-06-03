@@ -1,0 +1,12 @@
+---
+title: No count
+format: wordcount-markdown
+---
+
+Here are four words.
+
+::: {.no-count}
+
+Here are seven words that aren't counted.
+
+:::
