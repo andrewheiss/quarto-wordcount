@@ -231,18 +231,19 @@ body_count = {
       body_words = body_words + 1
     end
   end,
-  
+
   Code = function(el)
-    _,n = el.text:gsub("%S+","")
-    body_words = body_words + n
-  end,
-  
-  CodeBlock = function(el)
-    _,n = el.text:gsub("%S+","")
+    _, n = el.text:gsub("%S+", "")
     body_words = body_words + n
   end
-  
 }
+
+-- if count_code_blocks then
+--   body_count.CodeBlock = function(el)
+--     _,n = el.text:gsub("%S+","")
+--     body_words = body_words + n
+--   end
+-- end
 
 ref_count = {
   Str = function(el)
@@ -259,6 +260,11 @@ appendix_count = {
     if is_word(el.text) then
       appendix_words = appendix_words + 1
     end
+  end,
+  
+  Code = function(el)
+    _, n = el.text:gsub("%S+", "")
+    appendix_words = appendix_words + n
   end
 }
 
@@ -267,6 +273,11 @@ note_count = {
     if is_word(el.text) then
       note_words = note_words + 1
     end
+  end,
+  
+  Code = function(el)
+    _, n = el.text:gsub("%S+", "")
+    note_words = note_words + n
   end
 }
 
@@ -278,6 +289,31 @@ function Pandoc(el)
     return el
   end
   
+  -- Count code blocks in body, notes, and appendix if needed
+  if el.meta["count-code-blocks"] ~= nil then
+    count_code_blocks = el.meta["count-code-blocks"]
+  else
+    count_code_blocks = true
+  end
+  
+  -- Add these functions to the respective section counting functions
+  if count_code_blocks then
+    body_count.CodeBlock = function(el)
+      _, n = el.text:gsub("%S+", "")
+      body_words = body_words + n
+    end
+    
+    appendix_count.CodeBlock = function(el)
+      _, n = el.text:gsub("%S+", "")
+      appendix_words = appendix_words + n
+    end
+    
+    note_count.CodeBlock = function(el)
+      _, n = el.text:gsub("%S+", "")
+      note_words = note_words + n
+    end
+  end
+    
   -- Get all notes
   local all_notes = get_all_notes(el.blocks)
   -- Count words in notes

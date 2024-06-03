@@ -163,6 +163,75 @@ These words don't count.
 :::
 ````
 
+### Code blocks
+
+By default, text inside code blocks ***is*** counted. For example, this:
+
+````qmd
+---
+title: "Code counting"
+format: wordcount-html
+---
+
+This sentence has seven words in it.
+
+```{{r}}
+# Here is some code
+
+numbers <- 1:10
+mean(numbers)
+```
+````
+
+…will result in these counts:
+
+```text
+Overall totals:
+-----------------------------
+- 16 total words
+- 16 words in body and notes
+
+Section totals:
+-----------------------------
+- 16 words in text body
+```
+
+…with 7 words from the sentence and 9 from the code.
+
+Code block counting can be disabled with the YAML option `count-code-blocks`:
+
+````qmd
+---
+title: "Code counting"
+format: 
+  wordcount-html:
+    count-code-blocks: false
+---
+
+This sentence has seven words in it.
+
+```{{r}}
+# Here is some code
+
+numbers <- 1:10
+mean(numbers)
+```
+````
+
+…which makes these counts:
+
+```text
+Overall totals:
+----------------------------
+- 7 total words
+- 7 words in body and notes
+
+Section totals:
+----------------------------
+- 7 words in text body
+```
+
+
 ### Appendices
 
 In academic writing, it's often helpful to have a separate word count for content in the appendices, since things there don't typically count against journal word limits. [Quarto has a neat feature for automatically creating an appendix section](https://quarto.org/docs/authoring/appendices.html) and moving content there automatically as needed. It does this (I think) with a fancy Lua filter.

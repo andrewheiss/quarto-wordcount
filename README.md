@@ -10,6 +10,7 @@
   - [Terminal output](#terminal-output)
   - [Shortcodes](#shortcodes)
   - [No counting](#no-counting)
+  - [Code blocks](#code-blocks)
   - [Appendices](#appendices)
 - [Example](#example)
 - [Credits](#credits)
@@ -205,10 +206,10 @@ counts directly in the document:
   appendix, which must be wrapped in a div with the `#appendix-count` id
   ([see below for more details](#appendices))
 
-- Use `{{< words-note >}}` to include a count of the words in the notes:
+- Use `{{< words-note >}}` to include a count of the words in the notes
 
 - Use `{{< words-sum ARG >}}` where `ARG` is some concatenation of the
-  four countable areas: `body`, `ref`, `append`, and `note`.
+  four countable areas: `body`, `ref`, `append`, and `note`
 
   For example, `{{< words-sum body-note >}}` includes a count of the
   words in the body and notes; `{{< words-sum ref-append >}}` includes a
@@ -234,6 +235,75 @@ with the `{.no-count}` class:
 These words don't count.
 
 :::
+```
+
+### Code blocks
+
+By default, text inside code blocks ***is*** counted. For example, this:
+
+```` markdown
+---
+title: "Code counting"
+format: wordcount-html
+---
+
+This sentence has seven words in it.
+
+```{r}
+# Here is some code
+
+numbers <- 1:10
+mean(numbers)
+```
+````
+
+…will result in these counts:
+
+``` text
+Overall totals:
+-----------------------------
+- 16 total words
+- 16 words in body and notes
+
+Section totals:
+-----------------------------
+- 16 words in text body
+```
+
+…with 7 words from the sentence and 9 from the code.
+
+Code block counting can be disabled with the YAML option
+`count-code-blocks`:
+
+```` markdown
+---
+title: "Code counting"
+format: 
+  wordcount-html:
+    count-code-blocks: false
+---
+
+This sentence has seven words in it.
+
+```{r}
+# Here is some code
+
+numbers <- 1:10
+mean(numbers)
+```
+````
+
+…which makes these counts:
+
+``` text
+Overall totals:
+----------------------------
+- 7 total words
+- 7 words in body and notes
+
+Section totals:
+----------------------------
+- 7 words in text body
 ```
 
 ### Appendices
@@ -311,7 +381,7 @@ that look something like this:
 pandoc whatever.md --output whatever.html --lua-filter wordcount.lua --citeproc
 ```
 
-The order of these arguments matter, so having
+The order of these arguments matters, so having
 `--lua-filter wordcount.lua` come before `--citeproc` makes it so the
 words will be counted before the bibliography is generated, which isn’t
 great.

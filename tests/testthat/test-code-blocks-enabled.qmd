@@ -1,0 +1,31 @@
+---
+title: "Code blocks enabled"
+format: 
+  wordcount-markdown:
+    count-code-blocks: true
+---
+
+This sentence has seven words in it.[^note]
+
+```{r}
+asdf <- 1:10
+mean(asdf)
+```
+
+[^note]: Here's some code:
+
+```{r indent="    "}
+zxcv <- 21:30
+mean(zxcv)
+```
+
+::: {#appendix-count}
+
+There are five words here.
+
+```{r}
+qwer <- 11:20
+mean(qwer)
+```
+
+:::

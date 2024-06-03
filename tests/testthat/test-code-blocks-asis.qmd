@@ -1,0 +1,16 @@
+---
+title: "as-is results work"
+format: 
+  wordcount-markdown:
+    count-code-blocks: true
+---
+
+This sentence has seven words in it.
+
+```{r}
+#| echo: false
+#| results: asis
+
+output <- "Two words"
+cat(output)
+```
