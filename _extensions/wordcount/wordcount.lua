@@ -163,45 +163,68 @@ function print_word_counts()
   -- Use a bullet character in terminals that support UTF-8
   local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
   
-  -- Format these different numbers
-  local total_words_out = string.format("%d total words", total_words)
-  local manuscript_words_out = string.format("%d words in body, notes, and references", manuscript_words)
-  local body_words_out = string.format("%d words in text body", body_words)
-  local note_words_out = note_words > 0 and string.format("%d words in notes", note_words) or ""
-  local ref_words_out = ref_words > 0 and string.format("%d words in reference section", ref_words) or ""
-  local appendix_words_out = appendix_words > 0 and string.format("%d words in appendix section", appendix_words) or ""
+  -- Format these different numbers     
+  local total_words_out = string.format(
+    "%d total %s",
+    total_words, total_words == 1 and "word" or "words"
+  )
+
+  local manuscript_words_out = string.format(
+    "%d %s in body and notes",
+    manuscript_words, manuscript_words == 1 and "word" or "words"
+  )
+
+  local body_words_out = string.format(
+    "%d %s in text body",
+    body_words, body_words == 1 and "word" or "words"
+  )
+
+  local note_words_out = note_words > 0 and string.format(
+    "%d %s in notes",
+    note_words, note_words == 1 and "word" or "words"
+  ) or ""
+
+  local ref_words_out = ref_words > 0 and string.format(
+    "%d %s in reference section",
+    ref_words, ref_words == 1 and "word" or "words"
+  ) or ""
+
+  local appendix_words_out = appendix_words > 0 and string.format(
+    "%d %s in appendix section",
+    appendix_words, appendix_words == 1 and "word" or "words"
+  ) or ""
   
   local longest_out = math.max(
-  #total_words_out,
-  #manuscript_words_out,
-  #body_words_out,
-  #note_words_out,
-  #ref_words_out,
-  #appendix_words_out
-)
+    #total_words_out,
+    #manuscript_words_out,
+    #body_words_out,
+    #note_words_out,
+    #ref_words_out,
+    #appendix_words_out
+  )
 
-print("Overall totals:")
-print(string.rep("-", longest_out + 3))
-print(bullet .. total_words_out)
-print(bullet .. manuscript_words_out)
+  print("Overall totals:")
+  print(string.rep("-", longest_out + 3))
+  print(bullet .. total_words_out)
+  print(bullet .. manuscript_words_out)
 
-print("\nSection totals:")
-print(string.rep("-", longest_out + 3))
-print(bullet .. body_words_out)
+  print("\nSection totals:")
+  print(string.rep("-", longest_out + 3))
+  print(bullet .. body_words_out)
 
-if note_words_out ~= "" then
-  print(bullet .. note_words_out)
-end
+  if note_words_out ~= "" then
+    print(bullet .. note_words_out)
+  end
 
-if ref_words_out ~= "" then
-  print(bullet .. ref_words_out)
-end
+  if ref_words_out ~= "" then
+    print(bullet .. ref_words_out)
+  end
 
-if appendix_words_out ~= "" then
-  print(bullet .. appendix_words_out)
-end
+  if appendix_words_out ~= "" then
+    print(bullet .. appendix_words_out)
+  end
 
-print()
+  print()
 end
 
 body_count = {
