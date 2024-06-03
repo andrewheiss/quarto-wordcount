@@ -161,7 +161,8 @@ function print_word_counts()
   local manuscript_words = body_words + note_words
   
   -- Use a bullet character in terminals that support UTF-8
-  local bullet = os.getenv("LANG"):find("UTF%-8$") and "• " or "* "
+  local bullet = (os.getenv("OS"):find("^Windows") or 
+                  os.getenv("LANG"):find("UTF%-8$")) and "• " or "* "
   
   -- Format these different numbers     
   local total_words_out = string.format(
