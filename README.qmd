@@ -71,13 +71,26 @@ format:
 
 ### Terminal output
 
-The word count will appear in the terminal output when rendering the document. It shows multiple values: (1) the total count, (2) the count for the document sans references, and (3) the count for the reference list alone.
+The word count will appear in the terminal output when rendering the document. It shows multiple values: 
+
+- **Overall totals**: (1) the total count of everything, including the body, notes, references, and appendix sections, and (2) the count for just the body and notes. 
+
+  The journals I typically work with count the body + notes + references towards the total word count. When shrinking manuscripts to fit word limits, I find it helpful to split the references count off from the body + notes so I can more easily see where edits might be most efficient (e.g. re-word sentences vs. remove references)
+
+- **Individual section totals**: counts for the (1) text body, (2) notes, (3) references, and (4) appendix
 
 ```text
-133 total words
------------------------------
-76 words in text body
-57 words in reference section
+Overall totals:
+--------------------------------
+• 451 total words
+• 378 words in body and notes
+
+Section totals:
+--------------------------------
+• 315 words in text body
+• 63 words in notes
+• 53 words in reference section
+• 20 words in appendix section
 ```
 
 ### Shortcodes
@@ -126,16 +139,6 @@ More words here
 
 :::
 ````
-
-That will create this word count:
-
-```
-5 in the main text + references, with 4 in the appendix
--------------------------------------------------------
-5 words in text body
-0 words in reference section
-4 words in appendix section
-```
 
 
 ## Example
