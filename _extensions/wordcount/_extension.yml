@@ -10,11 +10,12 @@ contributes:
   shortcodes: 
     - "words.lua"
   format:
-    common: 
-      filters: 
-        - citeproc.lua
-        - wordcount.lua
-        - quarto
+    common:
+      filters:
+        - at: pre-quarto
+          path: citeproc.lua
+        - at: pre-quarto
+          path: wordcount.lua
       citeproc: false
     html: default
     pdf: default

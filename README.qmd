@@ -44,13 +44,17 @@ This extension fixes all three of these issues by relying on a [Lua filter](_ext
 quarto add andrewheiss/quarto-wordcount
 ```
 
-Using {quarto-wordcount} requires Quarto version >= 1.3.0
+{quarto-wordcount} requires Quarto version >= 1.4.551
 
 This will install the extension under the `_extensions` subdirectory. If you're using version control, you will want to check in this directory.
 
 ### Usage
 
-You can specify one of three different output formats in your YAML settings: `wordcount-html`, `wordcount-pdf`, and `wordcount-docx`:
+There are two ways to enable the extension: (1) as an output format and (2) as a filter.
+
+#### Output format
+
+You can specify one of four different output formats in your YAML settings: `wordcount-html`, `wordcount-pdf`, `wordcount-docx`:
 
 ```yaml
 title: Something
@@ -58,7 +62,7 @@ format:
   wordcount-html: default
 ```
 
-The `wordcount-FORMAT` format type is really just a wrapper for each base format (HTML, PDF, and Word), so all other HTML-, PDF-, and Word-specific options work like normal: 
+The `wordcount-FORMAT` format type is really just a wrapper for each base format (HTML, PDF, Word, and Markdown), so all other HTML-, PDF-, Word-, and Markdown-specific options work like normal: 
 
 ```yaml
 title: Something
@@ -67,6 +71,35 @@ format:
     toc: true
     fig-align: center
     cap-location: margin
+```
+
+#### Filter
+
+If you're using a [custom output format](https://quarto.org/docs/extensions/listing-formats.html) like [{hikmah-academic-quarto}](https://github.com/andrewheiss/hikmah-academic-quarto) or a [journal article format](https://quarto.org/docs/extensions/listing-journals.html) like [{jss}](https://github.com/quarto-journals/jss), you can't use the `wordcount-html` format, since you can't combine output formats.
+
+To enable word counting for *any* format, including custom formats, you can add the extension Lua scripts as filters. You need to specify three settings:
+
+1. `citeproc: false` must be set so that Quarto doesn't try to process citations
+2. The path to `citeproc.lua` so that citations are processed before counting words---[this must come *before* `wordcount.lua`](#how-this-all-works)
+3. The path to `wordcount.lua` so that words are counted
+
+```yaml
+title: Something
+format:
+  html:  # Regular built-in format
+    citeproc: false
+    filters:
+      - at: pre-quarto
+        path: _extensions/andrewheiss/wordcount/citeproc.lua
+      - at: pre-quarto
+        path: _extensions/andrewheiss/wordcount/wordcount.lua
+  jss-pdf:  # Custom third-party format
+    citeproc: false
+    filters:
+      - at: pre-quarto
+        path: _extensions/andrewheiss/wordcount/citeproc.lua
+      - at: pre-quarto
+        path: _extensions/andrewheiss/wordcount/wordcount.lua
 ```
 
 ### Terminal output
@@ -136,7 +169,7 @@ In academic writing, it's often helpful to have a separate word count for conten
 
 However, Quarto's appendix-generating process comes *after* any custom Lua filters, so even though the final rendered document creates a div with the id "appendix", that div isn't accessible when counting words (since it doesn't exist yet), so there's no easy way to extract the appendix words from the rest of the text.
 
-So, as a (temporary?) workaround (until I can figure out how to make this Lua filter run after the creation of the appendix div?), you can get a separate word count for the appendix by creating your own div with the id `appendix-count`:
+So, as a (temporary?) workaround (until I can figure out how to make this Lua filter run after the creation of the appendix div?), you can get a separate word count for the appendix by creating your own fenced div with the id `appendix-count`:
 
 ````markdown
 # Introduction
@@ -224,10 +257,11 @@ end
 format:
   html:
     citeproc: false
-    filters: 
-      - "/path/to/citeproc.lua"
-      - "/path/to/wordcount.lua"
-      - quarto
+    filters:
+      - at: pre-quarto
+        path: "path/to/citeproc.lua"
+      - at: pre-quarto
+        path: "path/to/wordcount.lua"
 ```
 
 This creates a pandoc command that looks something like this, feeding the document to the citeproc "filter" first, then feeding that to the word count script:
@@ -235,15 +269,3 @@ This creates a pandoc command that looks something like this, feeding the docume
 ```sh
 pandoc whatever.md --output whatever.html  --lua-filter citeproc.lua --lua-filter wordcount.lua
 ```
-
-Eventually [the Quarto team is planning on allowing filter options to get injected at different stages in the rendering process](https://github.com/quarto-dev/quarto-cli/issues/4113), so someday we can skip the citeproc wrapper filter and just do something like this:
-
-```yaml
-format:
-  html:
-    filters:
-      post:
-        - '/path/to/wordcount.lua'
-```
-
-But that doesn't work yet.

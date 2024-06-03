@@ -3,9 +3,18 @@ title: Some title
 author: Some author
 date: last-modified
 
-format:
-  wordcount-html: 
-    toc: false
+# Use as a custom format:
+format: wordcount-html
+
+# Or use as a set of filters:
+# format:
+#   html:
+#     filters:
+#       - at: pre-quarto
+#         path: path/to/citeproc.lua
+#       - at: pre-quarto
+#         path: path/to/wordcount.lua
+#     citeproc: false
 
 references:
 - id: Lovelace1842
