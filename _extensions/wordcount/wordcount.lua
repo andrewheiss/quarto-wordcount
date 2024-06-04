@@ -238,13 +238,6 @@ body_count = {
   end
 }
 
--- if count_code_blocks then
---   body_count.CodeBlock = function(el)
---     _,n = el.text:gsub("%S+","")
---     body_words = body_words + n
---   end
--- end
-
 ref_count = {
   Str = function(el)
     -- we don't count a word if it's entirely punctuation:
