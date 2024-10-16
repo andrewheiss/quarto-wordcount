@@ -40,7 +40,7 @@ format:
     wordcount-banner: true
 params:
   wordcount: |
-    <strong>{{< words-sum body-note-ref >}} total words</strong>: {{< words-body >}} in the body • {{< words-ref >}} in the references • {{< words-note >}} in the notes
+    <strong>{{{< words-sum body-note-ref >}}} total words</strong>: {{{< words-body >}}} in the body • {{{< words-ref >}}} in the references • {{{< words-note >}}} in the notes
 ---
 
 ::: {.content-visible when-meta="wordcount-banner"}

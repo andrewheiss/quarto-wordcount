@@ -50,7 +50,7 @@
 >     wordcount-banner: true
 > params:
 >   wordcount: |
->     <strong>-1 total words</strong>:  in the body •  in the references •  in the notes
+>     <strong>{{< words-sum body-note-ref >}} total words</strong>: {{< words-body >}} in the body • {{< words-ref >}} in the references • {{< words-note >}} in the notes
 > ---
 >
 > ::: {.content-visible when-meta="wordcount-banner"}
