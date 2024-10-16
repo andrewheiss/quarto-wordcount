@@ -1,0 +1,32 @@
+<script>
+// Create a status div
+var statusDiv = document.createElement('div');
+statusDiv.className = 'alert alert-primary text-center';
+statusDiv.role = 'alert';
+
+// Add the content of params$wordcount to the status div
+statusDiv.innerHTML = '<i class="bi bi-bar-chart-fill"></i>&ensp;`r params$wordcount`';
+
+// Create a <header class="fixed-top"> element to hold the status div
+var header = document.createElement('header');
+header.className = 'fixed-top';
+
+// Add the status div to the header
+header.appendChild(statusDiv);
+
+// Insert the header div before the `quarto-content` div
+var quartoContent = document.getElementById('quarto-content');
+if (quartoContent) {
+    quartoContent.parentNode.insertBefore(header, quartoContent);
+}
+
+// Add padding to the top of the body to create space for the banner
+document.body.style.paddingTop = statusDiv.offsetHeight + 'px';
+
+// Inject style attribute into the sidebar div if it's there
+var sidebar = document.getElementById('quarto-margin-sidebar');
+if (sidebar) {
+    sidebar.style.top = '67px';
+    sidebar.style.maxHeight = 'calc(-67px + 100vh)';
+}
+</script>

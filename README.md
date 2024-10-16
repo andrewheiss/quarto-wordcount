@@ -3,6 +3,7 @@
 # Quarto word count
 
 
+- [Experimental new feature!](#experimental-new-feature)
 - [Why counting words is hard](#why-counting-words-is-hard)
 - [Using the word count script](#using-the-word-count-script)
   - [Installing](#installing)
@@ -17,6 +18,47 @@
 - [How this all works](#how-this-all-works)
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
+
+## Experimental new feature!
+
+> [!TIP]
+>
+> I’ve added an experimental new feature that lets you add a sticky
+> status bar at the top of HTML documents to show the word count. I’ve
+> found that this is *super helpful* when writing, since I don’t need to
+> constantly check the terminal output.
+>
+> I haven’t figured out the best way to work with Lua filters and Quarto
+> shortcodes (and getting filters/shortcodes to run in the right order),
+> so for now the process is a little convoluted.
+>
+> 1.  Enable `wordcount-banner: true` in the YAML front matter
+>
+> 2.  Specify the content of the banner using the different shortcodes
+>     in `params: wordcount:`
+>
+> 3.  Include an HTML file that uses Javascript to inject the status
+>     banner into the document.
+>
+> Here’s a minimal example:
+>
+> ``` qmd
+> ---
+> title: Something
+> format:
+>   wordcount-html: 
+>     wordcount-banner: true
+> params:
+>   wordcount: |
+>     <strong>-1 total words</strong>:  in the body •  in the references •  in the notes
+> ---
+>
+> ::: {.content-visible when-meta="wordcount-banner"}
+> {{< include _extensions/andrewheiss/wordcount/banner.html >}}
+> :::
+>
+> Actual text stuff goes here.
+> ```
 
 ## Why counting words is hard
 

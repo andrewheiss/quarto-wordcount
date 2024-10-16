@@ -17,6 +17,40 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Experimental new feature!
+
+::: {.callout-tip}
+I've added an experimental new feature that lets you add a sticky status bar at the top of HTML documents to show the word count. I've found that this is *super helpful* when writing, since I don't need to constantly check the terminal output.
+
+I haven't figured out the best way to work with Lua filters and Quarto shortcodes (and getting filters/shortcodes to run in the right order), so for now the process is a little convoluted.
+
+1. Enable `wordcount-banner: true` in the YAML front matter
+
+2. Specify the content of the banner using the different shortcodes in `params: wordcount: `
+
+3. Include an HTML file that uses Javascript to inject the status banner into the document.
+
+Here's a minimal example:
+
+````qmd
+---
+title: Something
+format:
+  wordcount-html: 
+    wordcount-banner: true
+params:
+  wordcount: |
+    <strong>{{< words-sum body-note-ref >}} total words</strong>: {{< words-body >}} in the body • {{< words-ref >}} in the references • {{< words-note >}} in the notes
+---
+
+::: {.content-visible when-meta="wordcount-banner"}
+{{{< include _extensions/andrewheiss/wordcount/banner.html >}}}
+:::
+
+Actual text stuff goes here.
+````
+:::
+
 ## Why counting words is hard
 
 In academic writing and publishing, word counts are important, since many journals specify word limits for submitted articles. Counting how many words you have in a Quarto Markdown file is tricky, though, for a bunch of reasons:
