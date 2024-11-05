@@ -5,7 +5,7 @@ statusDiv.className = 'alert alert-primary text-center';
 statusDiv.role = 'alert';
 
 // Add the content of params$wordcount to the status div
-statusDiv.innerHTML = '<i class="bi bi-bar-chart-fill"></i>&ensp;`r params$wordcount`';
+statusDiv.innerHTML = '<i class="bi bi-bar-chart-fill"></i>&ensp;`r trimws(params$wordcount)`';
 
 // Create a <header class="fixed-top"> element to hold the status div
 var header = document.createElement('header');

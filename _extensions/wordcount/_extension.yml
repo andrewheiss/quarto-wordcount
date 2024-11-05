@@ -4,7 +4,7 @@ authors:
     orcid: 0000-0003-1866-860X
   - name: Justin Landis
     orcid: 0000-0001-5501-4934
-version: 1.6.0
+version: 1.6.1
 quarto-required: ">=1.4.551"
 contributes:
   shortcodes: 
